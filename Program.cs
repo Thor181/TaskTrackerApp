@@ -1,7 +1,17 @@
+using Microsoft.EntityFrameworkCore;
+using System.Globalization;
+using TaskTrackerApp.Models;
+using TaskTrackerApp.Service;
+
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Configuration.Bind("DataBase", new Config());
+builder.Services.AddDbContext<TrackerDbContext>(op => op.UseSqlServer(Config.ConnectionString));
+
 // Add services to the container.
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews().AddViewLocalization();
+
+builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
 
 var app = builder.Build();
 
@@ -14,6 +24,17 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+var supportedCultures = new[]
+{
+    new CultureInfo("ru"),
+    new CultureInfo("en")
+};
+app.UseRequestLocalization(new RequestLocalizationOptions
+{
+    DefaultRequestCulture = new Microsoft.AspNetCore.Localization.RequestCulture("ru"),
+    SupportedCultures = supportedCultures,
+    SupportedUICultures = supportedCultures
+});
 app.UseStaticFiles();
 
 app.UseRouting();

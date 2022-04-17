@@ -1,8 +1,33 @@
-﻿@{
+﻿@model List<TaskTrackerApp.Models.TaskStatus>
+@{
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="column-first">
+    <div class="text-center">
+        <h2>Список разделов</h2>
+    </div>
+
+    <nav>
+        <ul>
+            
+        </ul>
+    </nav>
+
+
 </div>
+<div class="column-second">
+
+    <div class="text-center " style="background-color: red;">
+        <h1 class="display-4">Welcome</h1>
+        <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="scripts/SideMenuScript.js"></script>
+}
+
+
+
+

@@ -1,0 +1,23 @@
+﻿
+
+.column-first {
+    float: left;
+    width: 20%;
+    /*animation: 1s columnFirstAnim;*/
+}
+
+@keyframes columnFirstAnim {
+    from {
+        width: 0%;
+    }
+
+    to {
+        width: 20%;
+    }
+}
+
+
+.column-second {
+    float: left;
+    width: 80%;
+}
