@@ -6,7 +6,7 @@ namespace TaskTrackerApp.Models
     public partial class Subtask
     {
         public long Id { get; set; }
-        public long IdTask { get; set; }
+        public long? IdTask { get; set; }
         public string Title { get; set; } = null!;
         public string? Description { get; set; }
         public DateTime DateRegister { get; set; }

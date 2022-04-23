@@ -12,7 +12,7 @@ namespace TaskTrackerApp.Models
         }
 
         public long Id { get; set; }
-        public long IdSection { get; set; }
+        public long? IdSection { get; set; }
         public string Title { get; set; } = null!;
         public string? Description { get; set; }
         public DateTime DateRegister { get; set; }

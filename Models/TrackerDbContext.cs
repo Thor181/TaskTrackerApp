@@ -74,7 +74,8 @@ namespace TaskTrackerApp.Models
                     .WithMany(p => p.Sections)
                     .HasForeignKey(d => d.IdUser)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Section_User");
+                    .HasConstraintName("FK_Section_User")
+                    .OnDelete(DeleteBehavior.Cascade);
 
                 
             });
