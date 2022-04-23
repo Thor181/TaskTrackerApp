@@ -17,22 +17,27 @@ namespace TaskTrackerApp.Controllers
             _logger = logger;
             _localizer = localizer;
             _context = context;
+            try
+            {
+                string a = "";
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
         }
+
+
 
         public IActionResult Index()
         {
-            List<Models.TaskStatus> model = new List<Models.TaskStatus>(_context.TaskStatuses);
-            ViewBag.TaskTree = _context.Subtasks.Include(x => x.IdTaskNavigation).ThenInclude(x => x.IdSectionNavigation).Select(x => new
-            {
-                IdSection = x.IdTaskNavigation.IdSectionNavigation.Id,
-                IdTask = x.IdTaskNavigation.Id,
-                IdSubtask = x.Id,
-                TitleSection = x.IdTaskNavigation.IdSectionNavigation.Title,
-                TitleTask = x.IdTaskNavigation.Title,
-                TitleSubtask = x.Title
-            });
-            return View(model);
+#warning id user
+            ViewBag.TaskTree = _context.Users.Select(x => new TaskTree(x.Id)).First();
+            return View();
         }
+
 
         public IActionResult Privacy()
         {
@@ -43,6 +48,28 @@ namespace TaskTrackerApp.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        public IActionResult RemoveSection(long idSection)
+        {
+            Section section = _context.Sections.Find(idSection) ?? new Section() { Id = -1 };
+            if (section.Id != -1)
+            {
+                try
+                {
+                    _context.Subtasks.Where(
+
+
+                    _context.Sections.Remove(section);
+                    _context.SaveChanges();
+                }
+                catch (Exception)
+                {
+
+                    return Error();
+                }
+            }
+            return View();
         }
     }
 }

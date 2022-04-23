@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Localization;
+using System.Collections;
 
 namespace TaskTrackerApp.Models
 {
@@ -6,31 +7,19 @@ namespace TaskTrackerApp.Models
     {
         public int IdUser { get; set; }
 
-        public int IdSection { get; set; }
-        public int IdTask { get; set; }
-        public int IdSubTask { get; set; }
+        public List<Section> Sections { get; set; }
+        public List<Task> Tasks { get; set; }
+        public List<Subtask> Subtasks { get; set; }
 
-        public string TitleSection { get; set; }
-        public string TitleTask { get; set; }
-        public string TitleSubtask { get; set; }
-
-        public string DescriptionSection { get; set; }
-        public string DescriptionTask { get; set; }
-        public string DescriptionSubtask { get; set; }
-
-        public TaskTree(int idSection, int idTask, int idSubtask, IStringLocalizer localizer)
+        public TaskTree(int idUser)
         {
-            IdSection = IdSection;
-            IdTask = IdTask;
-            IdSubTask = idSubtask;
-
-            using (TaskTrackerApp.Models.TrackerDbContext db = new())
+            IdUser = idUser;
+            using (TrackerDbContext db = new())
             {
-                
-                IdUser = db.Sections.Where(x => x.Id == idSection).Select(x => x.IdUser).FirstOrDefault();
-                TitleSection = db.Sections.Where(x => x.Id == idSection).Select(x => x.Title).FirstOrDefault() ?? "";
-
-            }
+                Sections = new List<Section>(db.Sections.Where(x => x.IdUser == idUser));
+                Tasks = new List<Task>(db.Tasks.Where(x => x.IdSectionNavigation.IdUser == idUser));
+                Subtasks = new List<Subtask>(db.Subtasks.Where(x => x.IdTaskNavigation.IdSectionNavigation.IdUser == idUser));
+            }       
         }
     }
 }

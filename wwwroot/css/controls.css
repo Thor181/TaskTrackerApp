@@ -3,8 +3,39 @@
     height: 0;
     width: 0;
 }
+
 .side-menu-toggle {
     position: relative;
     width: 30px;
     height: 30px;
 }
+
+.three-dot-div {
+    display: inline;
+    vertical-align: middle;
+    cursor: pointer;
+    position: relative;
+
+}
+
+    .three-dot-div:active .three-dot-piece {
+        fill: #52affe;
+    }
+
+.three-dot-svg {
+    height: 20px;
+    width: 5px;
+    margin-bottom: 5px;
+    vertical-align: middle;
+    
+}
+
+.three-dot-piece {
+    fill: #808080;
+}
+
+button{
+    border: none;
+}
+
+    

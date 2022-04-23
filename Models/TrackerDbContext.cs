@@ -25,6 +25,10 @@ namespace TaskTrackerApp.Models
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
+            if (!optionsBuilder.IsConfigured)
+            {
+                optionsBuilder.UseSqlServer(Service.Config.ConnectionString);
+            }
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

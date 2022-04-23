@@ -1,0 +1,41 @@
+﻿
+
+
+.popUp-view {
+    background-color: green;
+    width: 100px;
+    height: 100px;
+    position: absolute;
+    left: 15px;
+    display: inline-flex;
+    flex-direction: column;
+    border-radius: 8px;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 500ms;
+    z-index: 1;
+}
+
+
+
+.btn-primary-popup {
+    background-color: white;
+    height: 20px;
+    width: 100%;
+    border-radius: 0;
+    position: relative;
+    left: 0;
+    top: 5px;
+    font-size: 12px;
+    text-align: center;
+    padding: 0;
+    transition: 300ms;
+}
+
+    .btn-primary-popup:hover {
+        background-color: lightcoral;
+    }
+
+    .btn-primary-popup:active {
+        background-color: lightgray;
+    }

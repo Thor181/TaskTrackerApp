@@ -1,31 +1,168 @@
-﻿@model List<TaskTrackerApp.Models.TaskStatus>
+﻿@inject IViewLocalizer Localizer
+
 @{
     ViewData["Title"] = "Home Page";
 }
 
+
+
 <div class="column-first">
+
     <div class="text-center">
-        <h2>Список разделов</h2>
+        <h2>@Localizer["TaskList"]</h2>
+        <ul class="text-end" style="margin: 5px"><li><a>text</a></li></ul>
     </div>
 
-    <nav>
-        <ul>
-            
-        </ul>
+    <nav id="navigatePanel" style="overflow-y: auto; height: 500px">
+        <div id="taskTree">
+            <ul>
+                @*main list*@
+                @foreach (var treeSection in ((TaskTree)ViewBag.TaskTree).Sections)
+                {
+
+                    <li id="section_@treeSection.Id" class="li-section">
+                        @*for each section create <li>*@
+                        <span class="span-section">@treeSection.Title </span>
+                        <div class="three-dot-div">
+
+                            <div class="popUp-view">
+                                <form asp-controller="Home">
+
+                                <button type="submit" class="btn-primary-popup" asp-action="RemoveSection" asp-route-idSection="@treeSection.Id">@Localizer["BtnDelete"]</button>
+                                </form>
+                            </div>
+                            <svg class="three-dot-svg">
+                                <circle class="three-dot-piece" r="2" cx="2.5" cy="3"></circle>
+                                <circle class="three-dot-piece" r="2" cx="2.5" cy="9"></circle>
+                                <circle class="three-dot-piece" r="2" cx="2.5" cy="15"></circle>
+                            </svg>
+
+
+                        </div>
+
+                        @foreach (var treeTask in ((TaskTree)ViewBag.TaskTree).Tasks)
+                        {
+                            if (treeTask.IdSection == treeSection.Id)
+                            {
+                                <ul>
+                                    <li id="task_@treeSection.Id" class="li-task">
+                                        @*<li> for each task*@
+                                        <span class="span-task">@treeTask.Title</span>
+                                        <div class="three-dot-div">
+                                            <div class="popUp-view">
+                                                <div class="btn-primary-popup">@Localizer["BtnDelete"]</div>
+                                            </div>
+                                            <svg class="three-dot-svg">
+                                                <circle class="three-dot-piece" r="2" cx="2.5" cy="3"></circle>
+                                                <circle class="three-dot-piece" r="2" cx="2.5" cy="9"></circle>
+                                                <circle class="three-dot-piece" r="2" cx="2.5" cy="15"></circle>
+                                            </svg>
+
+
+                                        </div>
+                                        @foreach (var treeSubtask in ((TaskTree)ViewBag.TaskTree).Subtasks)
+                                        {
+                                            if (treeSubtask.IdTask == treeTask.Id)
+                                            {
+                                                <ul>
+                                                    <li id="subtask_@treeSection.Id" class="li-subtask">
+                                                        @*<li> for each subtask*@
+                                                        <span class="span-subtask">@treeSubtask.Title</span>
+                                                        <div class="three-dot-div">
+                                                            <div class="popUp-view">
+                                                                <div class="btn-primary-popup">@Localizer["BtnDelete"]</div>
+                                                            </div>
+                                                            <svg class="three-dot-svg">
+                                                                <circle class="three-dot-piece" r="2" cx="2.5" cy="3"></circle>
+                                                                <circle class="three-dot-piece" r="2" cx="2.5" cy="9"></circle>
+                                                                <circle class="three-dot-piece" r="2" cx="2.5" cy="15"></circle>
+                                                            </svg>
+
+
+                                                        </div>
+
+                                                    </li>
+                                                </ul>
+                                            }
+                                        }
+                                    </li>
+                                </ul>
+                            }
+                        }
+                    </li>
+                }
+            </ul>
+        </div>
+
     </nav>
 
-
 </div>
+
+
 <div class="column-second">
 
-    <div class="text-center " style="background-color: red;">
-        <h1 class="display-4">Welcome</h1>
-        <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <div class="text-center mainpage" style="background-color: darkgreen;">
+        <h1 id="mainTitle" class="display-4">Выберите задачу</h1>
+        <h1 id="mainDescription" class="display-4"><========</h1>
     </div>
 </div>
 
+
+
 @section Scripts {
-    <script src="scripts/SideMenuScript.js"></script>
+
+    <script>
+        $("#navigatePanel li").each(function() {
+            $("ul span").click(function() {
+                $("#mainTitle").text(this.innerText);
+            })
+        });
+    </script>
+
+
+    <script>
+        $(document).ready(function() {
+            $(".three-dot-div").click(function() {
+                if (!$(this).hasClass('popupIsExist')) {
+                    $('.popUp-view').css('opacity', '0').css('visibility', 'hidden');
+                    $('.three-dot-div.popupIsExist').removeClass('popupIsExist');
+                    $(this).addClass('popupIsExist');
+                    $(this).find('.popUp-view').css('opacity', '1').css('visibility', 'visible');
+                }
+                else{
+                    $('.popUp-view').css('opacity', '0').css('visibility', 'hidden');
+                    $(this).removeClass('popupIsExist');
+                }
+
+            });
+
+        });
+    </script>
+
+
+    <script>
+        $(document).ready(function() {
+            $(".li-section > ul").slideToggle(1);
+
+            $("#taskTree ul li:has('ul')").find('span:first').prepend('<em class="marker"></em>');
+
+            $('#taskTree ul li span').click(function() {
+                $("span.current").removeClass('current');
+                var span = $('span:first', this.parentNode);
+                span.toggleClass('current');
+                var li = $(this.parentNode);
+                if (!li.next().length) {
+                    li.find("ul:first > li").addClass('last');
+                }
+                var ul = $("ul", this.parentNode);
+                if (ul.length) {
+                    ul.slideToggle(300);
+                    var em = $("em:first", this.parentNode);
+                    em.toggleClass('open');
+                }
+            });
+        });
+    </script>
 }
 
 
