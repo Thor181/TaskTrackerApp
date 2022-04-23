@@ -75,6 +75,8 @@ namespace TaskTrackerApp.Models
                     .HasForeignKey(d => d.IdUser)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Section_User");
+
+                
             });
 
             modelBuilder.Entity<Subtask>(entity =>

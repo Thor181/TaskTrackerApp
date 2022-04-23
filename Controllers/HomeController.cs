@@ -17,22 +17,19 @@ namespace TaskTrackerApp.Controllers
             _logger = logger;
             _localizer = localizer;
             _context = context;
-            try
-            {
-                string a = "";
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
 
         }
 
-
-
         public IActionResult Index()
         {
+            void add()
+            {
+                _context.Add(new Section() { Title = $"newSection {new Random().Next(100)}", Description = "newDescr", IdUser = 1 });
+                _context.SaveChanges();
+                _context.Add(new Models.Task() { Title = "newTask", IdSection = _context.Sections.OrderBy(x => x.Id).Select(x => x.Id).Last(), Description = "newDescr", DateRegister = DateTime.Now, IdStatus = 2, Laboriousness = 8, PeriodExecution = DateTime.Now });
+                _context.SaveChanges();
+            }
+            //add();
 #warning id user
             ViewBag.TaskTree = _context.Users.Select(x => new TaskTree(x.Id)).First();
             return View();
@@ -43,6 +40,8 @@ namespace TaskTrackerApp.Controllers
         {
             return View();
         }
+
+
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
@@ -57,19 +56,16 @@ namespace TaskTrackerApp.Controllers
             {
                 try
                 {
-                    _context.Subtasks.Where(
-
-
                     _context.Sections.Remove(section);
                     _context.SaveChanges();
                 }
                 catch (Exception)
                 {
 
-                    return Error();
+                    throw;
                 }
             }
-            return View();
+            return RedirectToAction(nameof(Index));
         }
     }
 }
