@@ -33,28 +33,28 @@ namespace TaskTrackerApp.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<PerformersList>(entity =>
-            {
-                entity.ToTable("PerformersList");
+            //modelBuilder.Entity<PerformersList>(entity =>
+            //{
+            //    entity.ToTable("PerformersList");
 
-                entity.Property(e => e.Id).HasColumnName("id");
+            //    entity.Property(e => e.Id).HasColumnName("id");
 
-                entity.Property(e => e.IdTask).HasColumnName("idTask");
+            //    entity.Property(e => e.IdTask).HasColumnName("idTask");
 
-                entity.Property(e => e.IdUser).HasColumnName("idUser");
+            //    entity.Property(e => e.IdUser).HasColumnName("idUser");
 
-                entity.HasOne(d => d.IdTaskNavigation)
-                    .WithMany(p => p.PerformersLists)
-                    .HasForeignKey(d => d.IdTask)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_PerformersList_Task");
+            //    entity.HasOne(d => d.IdTaskNavigation)
+            //        //.WithMany(p => p.PerformersLists)
+            //        .HasForeignKey(d => d.IdTask)
+            //        .OnDelete(DeleteBehavior.ClientSetNull)
+            //        .HasConstraintName("FK_PerformersList_Task");
 
-                entity.HasOne(d => d.IdUserNavigation)
-                    .WithMany(p => p.PerformersLists)
-                    .HasForeignKey(d => d.IdUser)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_PerformersList_User");
-            });
+            //    entity.HasOne(d => d.IdUserNavigation)
+            //        .WithMany(p => p.PerformersLists)
+            //        .HasForeignKey(d => d.IdUser)
+            //        .OnDelete(DeleteBehavior.ClientSetNull)
+            //        .HasConstraintName("FK_PerformersList_User");
+            //});
 
             modelBuilder.Entity<Section>(entity =>
             {

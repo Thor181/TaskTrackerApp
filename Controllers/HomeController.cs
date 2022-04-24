@@ -32,6 +32,7 @@ namespace TaskTrackerApp.Controllers
             //add();
 #warning id user
             ViewBag.TaskTree = _context.Users.Select(x => new TaskTree(x.Id)).First();
+            ViewBag.Statuses = _context.TaskStatuses.ToList();
             return View();
         }
 
@@ -118,7 +119,7 @@ namespace TaskTrackerApp.Controllers
             return RedirectToAction(nameof(Index));
 
         }
-        public IActionResult AddTask(long idSection)
+        public IActionResult AddTask(long idSection, string nameTask, string descriptionTask, int status, DateTime dueDate)
         {
 
             return RedirectToAction(nameof(Index));

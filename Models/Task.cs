@@ -7,7 +7,7 @@ namespace TaskTrackerApp.Models
     {
         public Task()
         {
-            PerformersLists = new HashSet<PerformersList>();
+            //PerformersLists = new HashSet<PerformersList>();
             Subtasks = new HashSet<Subtask>();
         }
 
@@ -21,10 +21,13 @@ namespace TaskTrackerApp.Models
         public DateTime PeriodExecution { get; set; }
         public DateTime? DateCompletion { get; set; }
         public DateTime? ActualExecutionTime { get; set; }
+        public string? PerformersList { get; set; }
+
 
         public virtual Section IdSectionNavigation { get; set; } = null!;
         public virtual TaskStatus IdStatusNavigation { get; set; } = null!;
-        public virtual ICollection<PerformersList> PerformersLists { get; set; }
+        //public virtual ICollection<PerformersList> PerformersLists { get; set; }
+
         public virtual ICollection<Subtask> Subtasks { get; set; }
     }
 }

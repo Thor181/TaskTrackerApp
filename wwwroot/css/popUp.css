@@ -57,7 +57,6 @@
     transition: 0.25s;
 }
 
-
 .popup-add-section-background, .popup-add-task-background {
     background: #0000008c;
     width: inherit;
@@ -77,8 +76,12 @@
     flex-direction: column;
     box-shadow: #0000008c 1px 1px 15px;
     z-index: 1;
-    
 }
+
+.popup-add-task-body {
+    height: 500px;
+}
+
 .popup-add-section-body-controls, .popup-add-task-body-controls {
     background: #00000009;
     border-radius: 0 0 15px 15px;
@@ -101,7 +104,7 @@
 }
 
     .text-area {
-        height: 55%;
+        height: 150px;
         width: 400px;
         resize: none;
     }
@@ -113,4 +116,12 @@
     flex-direction: inherit;
     align-items: inherit;
     justify-content: inherit;
+}
+
+.popup-inner-div {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 70%;
+    
 }
