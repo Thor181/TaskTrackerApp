@@ -15,6 +15,9 @@
     vertical-align: middle;
     cursor: pointer;
     position: relative;
+    transition: 0.5s;
+    visibility: hidden;
+    opacity: 0.3;
 
 }
 

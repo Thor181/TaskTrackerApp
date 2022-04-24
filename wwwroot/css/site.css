@@ -21,9 +21,52 @@ ul{
     list-style-type: none;
 }
 
+footer{
+    line-height: 0px;
+}
+
 .container {
     max-width: 100%;
 }
 
 
+.navigate-panel {
+    position: absolute;
+    height: 500px;
+    width: inherit;
+    overflow-y: auto;
+    width: 29.5%;
+}
 
+#mainDescription {
+    margin: 0 10px 0 10px;
+    text-indent: 25px;
+    text-anchor: start;
+    text-align: justify;
+    font-size: 15px;
+    height: 100%;
+    overflow-y: auto;
+}
+
+.item-attributes {
+    visibility: hidden;
+    margin-left: 5px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+.item-attr {
+    background: white;
+    box-shadow: #00000033 1px 1px 10px;
+    border-radius: 8px;
+    padding: 2px 5px 2px 5px;
+
+}
+
+.em-hidden {
+    float: left;
+    width: 0px;
+    height: 0px;
+    visibility: hidden;
+    font-size: 0px;
+}

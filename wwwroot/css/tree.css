@@ -1,10 +1,15 @@
 ﻿.li-section {
     margin-top: 5px;
 }
+
 .li-task, .li-subtask {
     margin-top: 3px;
 }
 
+    .li-section:hover > .three-dot-div, .li-task:hover > .three-dot-div, .li-subtask:hover > .three-dot-div {
+        opacity: 1;
+        visibility: visible;
+    }
 
 .span-section {
     background-image: linear-gradient(90deg, lightgray, white);
@@ -14,10 +19,17 @@
     transition: 2s;
 }
 
-    .span-section:hover .span-section {
+    .span-section:hover {
         background-image: linear-gradient(90deg, #52affe, white);
     }
 
+.em-description, .em-date-register, .em-status, .em-labor, .em-date-exec, .em-actual-time-exec {
+    float: left;
+    width: 0px;
+    height: 0px;
+    visibility: hidden;
+    font-size: 0px;
+}
 
 
 .span-task {
@@ -51,7 +63,6 @@
     width: 0px;
     height: 0px;
     line-height: 0px;
-   
 }
 
     .marker.open {

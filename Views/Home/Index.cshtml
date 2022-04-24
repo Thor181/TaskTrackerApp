@@ -1,5 +1,5 @@
 ﻿@inject IViewLocalizer Localizer
-
+@model TaskTree
 @{
     ViewData["Title"] = "Home Page";
 }
@@ -8,27 +8,34 @@
 
 <div class="column-first">
 
-    <div class="text-center">
+    <div class="text-center" style="display: flex; flex-direction: row; justify-content: space-between; margin: 0 5px 0 5px;">
         <h2>@Localizer["TaskList"]</h2>
-        <ul class="text-end" style="margin: 5px"><li><a>text</a></li></ul>
+        <div>
+            <button id="addSectionBtn" class="btn btn-primary">Добавить раздел</button>
+        </div>
     </div>
 
-    <nav id="navigatePanel" style="overflow-y: auto; height: 500px">
+    <nav class="navigate-panel" style="">
         <div id="taskTree">
             <ul>
-                @*main list*@
-                @foreach (var treeSection in ((TaskTree)ViewBag.TaskTree).Sections)
+
+                @foreach (Section treeSection in ((TaskTree)ViewBag.TaskTree).Sections)
                 {
 
                     <li id="section_@treeSection.Id" class="li-section">
-                        @*for each section create <li>*@
-                        <span class="span-section">@treeSection.Title </span>
+
+                        <span class="span-section">
+                            @treeSection.Title
+                            <em class="em-description">@treeSection.Description</em>
+
+                        </span>
                         <div class="three-dot-div">
 
                             <div class="popUp-view">
                                 <form asp-controller="Home">
+                                    <button type="button"  class="btn-primary-popup btn-add-task">@Localizer["BtnAdd"]<em class="em-hidden">@treeSection.Id</em></button>
 
-                                <button type="submit" class="btn-primary-popup" asp-action="RemoveSection" asp-route-idSection="@treeSection.Id">@Localizer["BtnDelete"]</button>
+                                    <button type="submit" class="btn-primary-popup" asp-action="RemoveSection" asp-route-idSection="@treeSection.Id">@Localizer["BtnDelete"]</button>
                                 </form>
                             </div>
                             <svg class="three-dot-svg">
@@ -46,12 +53,28 @@
                             {
                                 <ul>
                                     <li id="task_@treeSection.Id" class="li-task">
-                                        @*<li> for each task*@
-                                        <span class="span-task">@treeTask.Title</span>
+
+                                        <span class="span-task">
+                                            @treeTask.Title
+                                            <em class="em-description">@treeTask.Description</em>
+                                            <em class="em-date-register">@treeTask.DateRegister</em>
+                                            <em class="em-status">@treeTask.IdStatus</em>
+                                            <em class="em-labor">@treeTask.Laboriousness</em>
+                                            <em class="em-date-exec">@treeTask.PeriodExecution</em>
+                                            <em class="em-actual-time-exec">@treeTask.ActualExecutionTime</em>
+                                        </span>
+
                                         <div class="three-dot-div">
+
+
                                             <div class="popUp-view">
-                                                <div class="btn-primary-popup">@Localizer["BtnDelete"]</div>
+                                                <form asp-controller="Home">
+                                                    <button type="submit" class="btn-primary-popup" asp-action="RemoveTask" asp-route-idTask="@treeTask.Id">@Localizer["BtnDelete"]</button>
+                                                </form>
                                             </div>
+
+
+
                                             <svg class="three-dot-svg">
                                                 <circle class="three-dot-piece" r="2" cx="2.5" cy="3"></circle>
                                                 <circle class="three-dot-piece" r="2" cx="2.5" cy="9"></circle>
@@ -66,11 +89,23 @@
                                             {
                                                 <ul>
                                                     <li id="subtask_@treeSection.Id" class="li-subtask">
-                                                        @*<li> for each subtask*@
-                                                        <span class="span-subtask">@treeSubtask.Title</span>
+
+                                                        <span class="span-subtask">
+                                                            @treeSubtask.Title
+
+                                                            <em class="em-description">@treeSubtask.Description</em>
+                                                            <em class="em-date-register">@treeSubtask.DateRegister</em>
+                                                            <em class="em-status">@treeSubtask.IdStatus</em>
+                                                            <em class="em-labor">@treeSubtask.Laboriousness</em>
+                                                            <em class="em-date-exec">@treeSubtask.PeriodExecution</em>
+                                                            <em class="em-actual-time-exec">@treeSubtask.ActualExecutionTime</em>
+                                                        </span>
                                                         <div class="three-dot-div">
                                                             <div class="popUp-view">
-                                                                <div class="btn-primary-popup">@Localizer["BtnDelete"]</div>
+                                                                <form asp-controller="Home">
+                                                                    <button type="submit" class="btn-primary-popup" asp-action="RemoveSubtask" asp-route-idTask="@treeSubtask.Id">@Localizer["BtnDelete"]</button>
+                                                                </form>
+
                                                             </div>
                                                             <svg class="three-dot-svg">
                                                                 <circle class="three-dot-piece" r="2" cx="2.5" cy="3"></circle>
@@ -101,24 +136,118 @@
 
 <div class="column-second">
 
-    <div class="text-center mainpage" style="background-color: darkgreen;">
-        <h1 id="mainTitle" class="display-4">Выберите задачу</h1>
-        <h1 id="mainDescription" class="display-4"><========</h1>
+    <div class="text-center mainpage">
+        <h1 id="mainTitle" class="display-4"> <=Выберите задачу </h1>
+        <div class="item-attributes">
+
+            <div class="item-attr attr-date-register">
+                <b>Дата регистрации: </b>
+                <br />
+                <div class="item-attr-value"></div>
+            </div>
+            <div class="item-attr attr-status">
+                <b>Статус: </b>
+                <br />
+                <div class="item-attr-value">V RAbote</div>
+            </div>
+            <div class="item-attr attr-labor">
+                <b>Плановая трудоемкость: </b>
+                <br />
+                <div class="item-attr-value">40</div>
+            </div>
+            <div class="item-attr attr-date-execution">
+                <b>Дата завершения: </b>
+                <br />
+                <div class="item-attr-value">11.01.2022 17:00:00</div>
+            </div>
+            <div class="item-attr attr-actual-date-execution">
+                <b>Фактическое время выполнения: </b>
+                <br />
+                <div class="item-attr-value">10h</div>
+            </div>
+
+        </div>
+
+        <hr />
+        <p id="mainDescription"></p>
     </div>
 </div>
 
+<div class="popup-add-section">
 
+    <div class="popup-add-section-background">
+        <div class="popup-add-section-body text-center">
+            <p class="display-6">Добавление раздела</p>
+            <hr />
+            <div class="popup-add-section-body-controls">
+                <form class="popup-form" asp-controller="Home" asp-action="AddSection">
+                    <input id="nameSection" name="nameSection" type="text" class="input-text-popup" placeholder="Название раздела (ресурсы)" />
+                    <textarea id="descriptionSection" name="descriptionSection" class="input-text-popup text-area" placeholder="Описание раздела"></textarea>
+
+                    <button class="btn btn-primary" type="submit">Добавить</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="popup-add-task">
+
+    <div class="popup-add-task-background">
+        <div class="popup-add-task-body text-center">
+            <p class="display-6">Добавление задачи</p>
+            <hr />
+            <div class="popup-add-task-body-controls">
+                <form class="popup-form" asp-controller="Home" asp-action="AddTask">
+                    <em class="em-hidden"></em>
+                    <input id="nameSection" name="nameSection" type="text" class="input-text-popup" placeholder="Название задачи (ресурсы)" />
+                    <textarea id="descriptionSection" name="descriptionSection" class="input-text-popup text-area" placeholder="Описание задачи"></textarea>
+
+                    <button class="btn btn-primary" type="submit">Добавить</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
 @section Scripts {
 
-    <script>
-        $("#navigatePanel li").each(function() {
-            $("ul span").click(function() {
-                $("#mainTitle").text(this.innerText);
-            })
-        });
-    </script>
 
+    <script>
+        $('.span-section, .span-task, .span-subtask').click(function() {
+            var descr = $(this).find('.em-description').text();
+            setText(this.innerText, descr);
+            if ($(this).hasClass('span-task') || $(this).hasClass('span-subtask')) {
+
+                $('.item-attributes').css('visibility', 'visible');
+
+                var dateReg = $(this).find('.em-date-register').text();
+                $('.attr-date-register').find('.item-attr-value').text(dateReg);
+
+                var status = $(this).find('.em-status').text();
+                $('.attr-status').find('.item-attr-value').text(status);
+
+                var labor = $(this).find('.em-labor').text();
+                $('.attr-labor').find('.item-attr-value').text(labor);
+
+                var dateExec = $(this).find('.em-date-exec').text();
+                $('.attr-date-exec').find('.item-attr-value').text(dateExec);
+
+                var actualDateExec = $(this).find('.em-actual-time-exec').text();
+                $('.attr-actual-date-execution').find('.item-attr-value').text(actualDateExec);
+
+            }
+            else {
+                $('.item-attributes').css('visibility', 'hidden');
+            }
+
+        });
+
+        function setText(title, description) {
+            $('#mainTitle').text(title);
+            $('#mainDescription').text(description);
+        }
+    </script>
 
     <script>
         $(document).ready(function() {
@@ -129,7 +258,7 @@
                     $(this).addClass('popupIsExist');
                     $(this).find('.popUp-view').css('opacity', '1').css('visibility', 'visible');
                 }
-                else{
+                else {
                     $('.popUp-view').css('opacity', '0').css('visibility', 'hidden');
                     $(this).removeClass('popupIsExist');
                 }
@@ -139,30 +268,31 @@
         });
     </script>
 
+    <script>
+        $(document).ready(function() {
+
+            $("#addSectionBtn").click(function() {
+                $('.popup-add-section').css('visibility', 'visible').css('opacity', '1');
+            });
+            $('.popup-add-section-background').click(function(e) {
+                if (e.target !== e.currentTarget) return;
+                $('.popup-add-section').css('visibility', 'hidden').css('opacity', '0');
+                $('#nameSection').val("");
+                $('#descriptionSection').val("");
+            });
+        });
+
+    </script>
 
     <script>
         $(document).ready(function() {
-            $(".li-section > ul").slideToggle(1);
-
-            $("#taskTree ul li:has('ul')").find('span:first').prepend('<em class="marker"></em>');
-
-            $('#taskTree ul li span').click(function() {
-                $("span.current").removeClass('current');
-                var span = $('span:first', this.parentNode);
-                span.toggleClass('current');
-                var li = $(this.parentNode);
-                if (!li.next().length) {
-                    li.find("ul:first > li").addClass('last');
-                }
-                var ul = $("ul", this.parentNode);
-                if (ul.length) {
-                    ul.slideToggle(300);
-                    var em = $("em:first", this.parentNode);
-                    em.toggleClass('open');
-                }
-            });
+            $(".btn-add-task").click(function() {
+                var idSection = $(this).find('.em-hidden').text();
+                $('.popup-add-task').css('visibility', 'visible').css('opacity', '1');
+            })
         });
     </script>
+    <script src="~/scripts/tasktree.js"></script>
 }
 
 

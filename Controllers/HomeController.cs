@@ -49,6 +49,7 @@ namespace TaskTrackerApp.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
+        [HttpPost]
         public IActionResult RemoveSection(long idSection)
         {
             Section section = _context.Sections.Find(idSection) ?? new Section() { Id = -1 };
@@ -56,6 +57,11 @@ namespace TaskTrackerApp.Controllers
             {
                 try
                 {
+                    foreach (Models.Task task in _context.Tasks.Where(x => x.IdSection == section.Id))
+                    {
+                        task.IdSection = null;
+                    }
+                    
                     _context.Sections.Remove(section);
                     _context.SaveChanges();
                 }
@@ -65,6 +71,56 @@ namespace TaskTrackerApp.Controllers
                     throw;
                 }
             }
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        public IActionResult RemoveTask(long idTask)
+        {
+            Models.Task task = _context.Tasks.Find(idTask) ?? new Models.Task() { Id = -1 };
+            if (task.Id != -1)
+            {
+                try
+                {
+                    foreach (Subtask subtask in _context.Subtasks.Where(x => x.IdTask == task.Id))
+                    {
+                        subtask.IdTask = null;
+                    }
+
+                    _context.Tasks.Remove(task);
+                    _context.SaveChanges();
+                }
+                catch (Exception)
+                {
+
+                    throw;
+                }
+            }
+            return RedirectToAction(nameof(Index));
+        }
+        [HttpPost]
+        public IActionResult AddSection(string nameSection, string descriptionSection)
+        {
+            if (!string.IsNullOrWhiteSpace(nameSection))
+            {
+                try
+                {
+                    _context.Sections.Add(new Section() { IdUser = 1, Title = nameSection, Description = descriptionSection });
+                    _context.SaveChanges();
+                }
+                catch (Exception)
+                {
+
+                    throw;
+                }
+                
+            }
+            return RedirectToAction(nameof(Index));
+
+        }
+        public IActionResult AddTask(long idSection)
+        {
+
             return RedirectToAction(nameof(Index));
         }
     }
