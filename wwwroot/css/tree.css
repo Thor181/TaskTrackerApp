@@ -23,7 +23,7 @@
         background-image: linear-gradient(90deg, #52affe, white);
     }
 
-.em-description, .em-date-register, .em-status, .em-labor, .em-date-exec, .em-actual-time-exec {
+.em-description, .em-date-register, .em-status, .em-labor, .em-date-exec, .em-actual-time-exec, .em-performers-list, .em-status-id {
     float: left;
     width: 0px;
     height: 0px;

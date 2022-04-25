@@ -46,7 +46,7 @@
         background-color: lightgray;
     }
 
-.popup-add-section, .popup-add-task {
+.popup-add-section, .popup-add-task, .popup-add-subtask {
     position: absolute;
     width: 100%;
     height: 100%;
@@ -57,7 +57,7 @@
     transition: 0.25s;
 }
 
-.popup-add-section-background, .popup-add-task-background {
+.popup-add-section-background, .popup-add-task-background, .popup-add-subtask-background {
     background: #0000008c;
     width: inherit;
     height: inherit;
@@ -65,7 +65,7 @@
     justify-content: center;
 }
 
-.popup-add-section-body, .popup-add-task-body {
+.popup-add-section-body, .popup-add-task-body, .popup-add-subtask-body {
     background: white;
     position: relative;
     width: 500px;
@@ -78,11 +78,11 @@
     z-index: 1;
 }
 
-.popup-add-task-body {
+.popup-add-task-body, .popup-add-subtask-body {
     height: 500px;
 }
 
-.popup-add-section-body-controls, .popup-add-task-body-controls {
+.popup-add-section-body-controls, .popup-add-task-body-controls, .popup-add-subtask-body-controls {
     background: #00000009;
     border-radius: 0 0 15px 15px;
     position: inherit;

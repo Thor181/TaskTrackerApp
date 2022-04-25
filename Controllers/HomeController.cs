@@ -11,27 +11,33 @@ namespace TaskTrackerApp.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly IStringLocalizer<HomeController> _localizer;
         private readonly TrackerDbContext _context;
+        private readonly int _idCurrentUser;
+
+        private enum TaskStatuses : byte
+        {
+            Appointed = 1,
+            Performing = 2,
+            Pause = 3,
+            Completed = 4
+        }
 
         public HomeController(ILogger<HomeController> logger, IStringLocalizer<HomeController> localizer, TrackerDbContext context)
         {
             _logger = logger;
             _localizer = localizer;
             _context = context;
-
+            _idCurrentUser = 1;
         }
 
         public IActionResult Index()
         {
-            void add()
-            {
-                _context.Add(new Section() { Title = $"newSection {new Random().Next(100)}", Description = "newDescr", IdUser = 1 });
-                _context.SaveChanges();
-                _context.Add(new Models.Task() { Title = "newTask", IdSection = _context.Sections.OrderBy(x => x.Id).Select(x => x.Id).Last(), Description = "newDescr", DateRegister = DateTime.Now, IdStatus = 2, Laboriousness = 8, PeriodExecution = DateTime.Now });
-                _context.SaveChanges();
-            }
-            //add();
 #warning id user
-            ViewBag.TaskTree = _context.Users.Select(x => new TaskTree(x.Id)).First();
+            TaskTree taskTree = new TaskTree(_idCurrentUser);
+            foreach (var item in taskTree.Tasks)
+            {
+                item.Status = _context.TaskStatuses.Where(x => x.Id == item.IdStatus).Select(x => x.Status).FirstOrDefault() ?? "";
+            }
+            ViewBag.TaskTree = taskTree;
             ViewBag.Statuses = _context.TaskStatuses.ToList();
             return View();
         }
@@ -119,10 +125,149 @@ namespace TaskTrackerApp.Controllers
             return RedirectToAction(nameof(Index));
 
         }
-        public IActionResult AddTask(long idSection, string nameTask, string descriptionTask, int status, DateTime dueDate)
+        [HttpPost]
+        public async Task<IActionResult> AddTask(long idSection, string nameTask, string descriptionTask, byte status, DateTime dueDate, string performersList)
         {
+            DateTime regDate = DateTime.Now;
+            double laboriousness = Math.Round((dueDate - regDate).TotalHours, 2);
+            Models.Task task = new Models.Task() 
+            { 
+                IdSection = idSection,  
+                Title = nameTask, 
+                Description = descriptionTask, 
+                DateRegister = DateTime.Now,
+                IdStatus = status,
+                PeriodExecution = dueDate,
+                Laboriousness = laboriousness,
+                PerformersList = performersList
+            };
+            try
+            {
+                await _context.AddAsync(task);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
 
+                throw;
+            }
             return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddSubtask(long idTask, string nameSubtask, string descriptionSubtask, byte status, DateTime dueDate, string performersList)
+        {
+            DateTime regDate = DateTime.Now;
+            double laboriousness = Math.Round((dueDate - regDate).TotalHours, 2);
+            Models.Subtask subtask = new Models.Subtask()
+            {
+                IdTask = idTask,
+                Title = nameSubtask,
+                Description = descriptionSubtask,
+                DateRegister = DateTime.Now,
+                IdStatus = status,
+                PeriodExecution = dueDate,
+                Laboriousness = laboriousness
+            };
+            try
+            {
+                await _context.AddAsync(subtask);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return RedirectToAction(nameof(Index));
+        }
+
+        public IActionResult PauseTask(long idTask)
+        {
+            try
+            {
+                Models.Task? task = _context.Tasks.FirstOrDefault(x => x.Id == idTask);
+                if (task != null)
+                {
+                    task.IdStatus = ((byte)TaskStatuses.Pause);
+                    _context.Update(task);
+                    _context.SaveChanges();
+                    return RedirectToAction(nameof(Index));
+                }
+
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return new EmptyResult();
+        }
+        [HttpPost]
+        public IActionResult ResumeTask(long idTask)
+        {
+            try
+            {
+                Models.Task? task = _context.Tasks.FirstOrDefault(x => x.Id == idTask);
+                if (task != null)
+                {
+                    task.IdStatus = ((byte)TaskStatuses.Performing);
+                    _context.Update(task);
+                    _context.SaveChanges();
+                    return RedirectToAction(nameof(Index));
+                }
+
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return new EmptyResult();
+        }
+        [HttpPost]
+        public IActionResult PauseSubtask(long idSubtask)
+        {
+            try
+            {
+                Subtask? subtask = _context.Subtasks.FirstOrDefault(x => x.Id == idSubtask);
+                if (subtask != null)
+                {
+                    subtask.IdStatus = ((byte)TaskStatuses.Pause);
+                    _context.Update(subtask);
+                    _context.SaveChanges();
+                    return RedirectToAction(nameof(Index));
+                }
+                
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return new EmptyResult();
+        }
+        [HttpPost]
+        public IActionResult ResumeSubtask(long idSubtask)
+        {
+            try
+            {
+                Subtask? subtask = _context.Subtasks.FirstOrDefault(x => x.Id == idSubtask);
+                if (subtask != null)
+                {
+                    subtask.IdStatus = ((byte)TaskStatuses.Performing);
+                    _context.Update(subtask);
+                    _context.SaveChanges();
+                    return RedirectToAction(nameof(Index));
+                }
+
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return new EmptyResult();
         }
     }
 }

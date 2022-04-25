@@ -8,6 +8,18 @@ html {
   }
 }
 
+@media (max-width: 1536px) {
+    html {
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 1352px) {
+    html {
+        font-size: 13px;
+    }
+}
+
 html {
   position: relative;
   min-height: 100%;
@@ -49,22 +61,35 @@ footer{
 }
 
 .item-attributes {
-    visibility: hidden;
+    visibility: visible;
+    height: auto;
+    width: auto;
     margin-left: 5px;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    flex-wrap: wrap;
+
 }
 .item-attr {
     background: white;
     box-shadow: #00000033 1px 1px 10px;
     border-radius: 8px;
     padding: 2px 5px 2px 5px;
+    margin-bottom: 10px;
+    
 
 }
 
 .em-hidden {
     float: left;
+    width: 0px;
+    height: 0px;
+    visibility: hidden;
+    font-size: 0px;
+}
+
+.hidden-item {
     width: 0px;
     height: 0px;
     visibility: hidden;
