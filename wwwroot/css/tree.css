@@ -23,13 +23,6 @@
         background-image: linear-gradient(90deg, #52affe, white);
     }
 
-.em-description, .em-date-register, .em-status, .em-labor, .em-date-exec, .em-actual-time-exec, .em-performers-list, .em-status-id {
-    float: left;
-    width: 0px;
-    height: 0px;
-    visibility: hidden;
-    font-size: 0px;
-}
 
 
 .span-task {
@@ -69,3 +62,11 @@
         border-color: gray transparent transparent transparent;
         border-width: .5em .25em 0 .25em;
     }
+
+.em-description, .em-date-register, .em-status, .em-labor, .em-date-exec, .em-actual-time-exec, .em-performers-list, .em-status-id, .em-actual-date {
+    float: left;
+    width: 0px;
+    height: 0px;
+    visibility: hidden;
+    font-size: 0px;
+}

@@ -19,9 +19,10 @@ namespace TaskTrackerApp.Models
         public DateTime DateRegister { get; set; }
         public byte IdStatus { get; set; }
         public double Laboriousness { get; set; }
-        public DateTime PeriodExecution { get; set; }
+        public DateTime? PeriodExecution { get; set; }
         public DateTime? DateCompletion { get; set; }
-        public DateTime? ActualExecutionTime { get; set; }
+        
+        public string? ActualExecutionTime { get; set; }
         public string? PerformersList { get; set; }
         [NotMapped]
         public string? Status { get; set; }

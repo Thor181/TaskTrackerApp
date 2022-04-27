@@ -39,6 +39,11 @@
 
 button{
     border: none;
+
 }
 
-    
+.btn-primary {
+    color: #fff;
+    background-color: #52affe;
+    border-color: #0089fe;
+}

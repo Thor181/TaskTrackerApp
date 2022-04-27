@@ -1,5 +1,7 @@
 html {
-  font-size: 14px;
+    font-size: 14px;
+    position: relative;
+    min-height: 100%;
 }
 
 @media (min-width: 768px) {
@@ -20,13 +22,9 @@ html {
     }
 }
 
-html {
-  position: relative;
-  min-height: 100%;
-}
-
 body {
   margin-bottom: 60px;
+
 }
 
 ul{
@@ -94,4 +92,38 @@ footer{
     height: 0px;
     visibility: hidden;
     font-size: 0px;
+}
+
+select {
+    border-radius: 8px;
+    border: none;
+}
+.input-date {
+    border-radius: 8px;
+    border: none;
+}
+
+
+.input-validate {
+    animation: shake 0.9s cubic-bezier(.36,.07,.19,.97) both;
+}
+
+@keyframes shake {
+
+    10%, 90% {
+        transform: translate3d(-1px, 0, 0);
+        border: 2px solid #ffabab;
+    }
+
+    20%, 80% {
+        transform: translate3d(2px, 0, 0);
+    }
+
+    30%, 50%, 70% {
+        transform: translate3d(-4px, 0, 0);
+    }
+
+    40%, 60% {
+        transform: translate3d(4px, 0, 0);
+    }
 }

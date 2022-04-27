@@ -77,9 +77,14 @@
                                                     {
                                                         <button type="submit" asp-action="PauseTask" class="btn-primary-popup btn-pause-subtask" asp-route-idTask="@treeTask.Id">Приостановить <em class="em-hidden">@treeTask.Id</em></button>
                                                     }
-                                                    else
+                                                    else if (treeTask.IdStatus == 3)
                                                     {
                                                         <button type="submit" asp-action="ResumeTask" class="btn-primary-popup btn-resume-subtask" asp-route-idTask="@treeTask.Id">Возобновить <em class="em-hidden">@treeTask.Id</em></button>
+                                                    }
+                                                    @if (treeTask.IdStatus != 4)
+                                                    {
+                                                    <button type="submit" class="btn-primary-popup" asp-action="CompletTask" asp-route-idTask="@treeTask.Id">Завершить</button>
+                                                        
                                                     }
 
                                                     <button type="submit" class="btn-primary-popup" asp-action="RemoveTask" asp-route-idTask="@treeTask.Id">@Localizer["BtnDelete"]</button>
@@ -117,11 +122,17 @@
                                                                     {
                                                                         <button type="submit" asp-action="PauseSubtask" class="btn-primary-popup btn-pause-subtask" asp-route-idSubtask="@treeSubtask.Id">Приостановить <em class="em-hidden">@treeSubtask.Id</em></button>
                                                                     }
-                                                                    else
+                                                                    else if (treeSubtask.IdStatus == 3)
                                                                     {
                                                                         <button type="submit" asp-action="ResumeSubtask" class="btn-primary-popup btn-resume-subtask" asp-route-idSubtask="@treeSubtask.Id">Возобновить <em class="em-hidden">@treeSubtask.Id</em></button>
+
                                                                     }
-                                                                    <button type="submit" class="btn-primary-popup" asp-action="RemoveSubtask" asp-route-idTask="@treeSubtask.Id">@Localizer["BtnDelete"]</button>
+                                                                    @if(treeSubtask.IdStatus != 4)
+                                                                    {
+                                                                    <button type="submit" class="btn-primary-popup" asp-action="CompletSubtask" asp-route-idSubtask="@treeSubtask.Id">Завершить</button>
+
+                                                                    }
+                                                                    <button type="submit" class="btn-primary-popup" asp-action="RemoveSubtask" asp-route-idSubtask="@treeSubtask.Id">@Localizer["BtnDelete"]</button>
                                                                 </form>
 
                                                             </div>
@@ -213,7 +224,7 @@
                     <input id="nameSection" name="nameSection" type="text" class="input-text-popup" placeholder="Название раздела (ресурсы)" />
                     <textarea id="descriptionSection" name="descriptionSection" class="input-text-popup text-area" placeholder="Описание раздела"></textarea>
 
-                    <button class="btn btn-primary" type="submit">Добавить</button>
+                    <button id="addSectionBtn__popup" class="btn btn-primary" type="submit">Добавить</button>
                 </form>
             </div>
         </div>
@@ -249,14 +260,14 @@
 
                         <div style="display: inline-flex; flex-direction: column;">
                             <span><b>Срок</b></span>
-                            <input name="dueDate" type="datetime-local" style="height: 28px;" />
+                            <input id="input-dueDate__popup" name="dueDate" class="input-date" type="datetime-local" style="height: 28px;" />
                         </div>
 
                     </div>
 
                     <input id="performersList" name="performersList" type="text" class="input-text-popup" style="margin: 10px;" placeholder="Исполнители" />
 
-                    <button class="btn btn-primary" style="margin: 10px;" type="submit">Добавить</button>
+                    <button id="addTaskBtn__popup" class="btn btn-primary" style="margin: 10px;" type="submit">Добавить</button>
 
 
                 </form>
@@ -277,7 +288,7 @@
 
                     <input name="idTask" class="em-hidden" />
 
-                    <input id="nameSubtask" name="nameSubtask" type="text" class="input-text-popup" placeholder="Наименование подзадачи (ресурсы)" />
+                    <input id="nameSubtask" name="nameSubtask" type="text" class="input-text-popup required" placeholder="Наименование подзадачи (ресурсы)" />
 
                     <textarea id="descriptionSubtask" name="descriptionSubtask" class="input-text-popup text-area" placeholder="Описание подзадачи"></textarea>
 
@@ -294,12 +305,12 @@
 
                         <div style="display: inline-flex; flex-direction: column;">
                             <span><b>Срок</b></span>
-                            <input name="dueDate" type="datetime-local" style="height: 28px;" />
+                            <input id="input-dueDate-subtask__popup" name="dueDate" type="datetime-local" class="input-date" style="height: 28px;" />
                         </div>
 
                     </div>
 
-                    <button class="btn btn-primary" style="margin: 10px;" type="submit">Добавить</button>
+                    <button id="addSubtaskBtn__popup" class="btn btn-primary" style="margin: 10px;" type="submit">Добавить</button>
 
 
                 </form>
@@ -310,75 +321,96 @@
 
 @section Scripts {
 
+    <script>
+        $(document).ready(function() {
+            $('.item-attributes').addClass('hidden-item');
+
+            $('.span-section, .span-task, .span-subtask').click(function() {
+                let descr = $(this).find('.em-description').text();
+                setText(this.innerText, descr);
+                if ($(this).hasClass('span-task') || $(this).hasClass('span-subtask')) {
+
+                    $('.item-attributes').removeClass('hidden-item');
+
+                    let dateReg = $(this).find('.em-date-register').text();
+                    $('.attr-date-register').find('.item-attr-value').text(dateReg);
+
+                    let status = $(this).find('.em-status').text();
+                    let statusId = $(this).find('.em-status-id').text();
+                    let attrValue = $('.attr-status').find('.item-attr-value').text(status);
+
+                    if (statusId == "2") {
+                        $(attrValue).css('color', '#52affe');
+                    }
+                    else if (statusId == "3") {
+                        $(attrValue).css('color', 'orange');
+                    }
+                    else if (statusId == "4") {
+                        $(attrValue).css('color', 'green');
+                    }
+                    else {
+                        $(attrValue).css('color', 'black');
+                    }
+
+                    let labor = $(this).find('.em-labor').text();
+                    $('.attr-labor').find('.item-attr-value').text(labor);
+
+                    let dateExec = $(this).find('.em-date-exec').text();
+                    $('.attr-date-execution').find('.item-attr-value').text(dateExec);
+
+                    let actualDate = $(this).find('.em-actual-date').text();
+                    $('.attr-actual-date').find('.item-attr-value').text(actualDate);
+
+                    let actualDateExec = $(this).find('.em-actual-time-exec').text();
+                    $('.attr-actual-date-execution').find('.item-attr-value').text(actualDateExec);
+
+                    if ($(this).hasClass('span-subtask')) {
+                        hide($('.attr-performers-list'));
+                    } else {
+                        let performersList = $(this).find('.em-performers-list').text();
+                        $('.attr-performers-list').removeClass('hidden-item');
+                        $('.attr-performers-list').find('.item-attr-value').text(performersList);
+                    }
+
+                }
+                else if ($(this).hasClass('span-section')) {
+                    hide($('.item-attributes'));
+
+                }
+            });
+
+            function setText(title, description) {
+                $('#mainTitle').text(title);
+                $('#mainDescription').text(description);
+            }
+
+            function hide(item) {
+                $(item).addClass('hidden-item');
+            }
+        });
+    </script>
 
     <script>
-$(document).ready(function() {
-    $('.item-attributes').addClass('hidden-item');
+        $(document).ready(function() {
+            $('.em-status-id').each(function() {
+                if ($(this).text() == "4") {
 
-    $('.span-section, .span-task, .span-subtask').click(function() {
-        var descr = $(this).find('.em-description').text();
-        setText(this.innerText, descr);
-        if ($(this).hasClass('span-task') || $(this).hasClass('span-subtask')) {
+                    $(this).parent().css('text-decoration', 'line-through');
+                }
+            });
+        });
+    </script>
 
-            $('.item-attributes').removeClass('hidden-item');
-
-            var dateReg = $(this).find('.em-date-register').text();
-            $('.attr-date-register').find('.item-attr-value').text(dateReg);
-
-            var status = $(this).find('.em-status').text();
-            var statusId = $(this).find('.em-status-id').text();
-            var attrValue = $('.attr-status').find('.item-attr-value').text(status);
-
-            if (statusId == "2") {
-                $(attrValue).css('color', '#52affe');
-            }
-            else if (statusId == "3") {
-                $(attrValue).css('color', 'orange');
-            }
-            else if (statusId == "4") {
-                $(attrValue).css('color', 'green');
-            }
-            else {
-                $(attrValue).css('color', 'black');
-            }
-
-            var labor = $(this).find('.em-labor').text();
-            $('.attr-labor').find('.item-attr-value').text(labor);
-
-            var dateExec = $(this).find('.em-date-exec').text();
-            $('.attr-date-execution').find('.item-attr-value').text(dateExec);
-
-            var actualDate = $(this).find('.em-actual-date').text();
-            $('.attr-actual-date').find('.item-attr-value').text(actualDate);
-
-            var actualDateExec = $(this).find('.em-actual-time-exec').text();
-            $('.attr-actual-date-execution').find('.item-attr-value').text(actualDateExec);
-
-            if ($(this).hasClass('span-subtask')) {
-                hide($('.attr-performers-list'));
-            } else {
-                var performersList = $(this).find('.em-performers-list').text();
-                $('.attr-performers-list').removeClass('hidden-item');
-                $('.attr-performers-list').find('.item-attr-value').text(performersList);
-            }
-
-        }
-        else if ($(this).hasClass('span-section')) {
-            hide($('.item-attributes'));
-            
-        }
-    });
-
-    function setText(title, description) {
-        $('#mainTitle').text(title);
-        $('#mainDescription').text(description);
-    }
-
-    function hide(item) {
-
-        $(item).addClass('hidden-item');
-    }
-});
+    <script>
+        $(document).ready(function() {
+            $('*').click(function(e) {
+                if (e.target !== e.currentTarget) return;
+                if ($('.popupIsExist').length) {
+                    $('.popUp-view').css('opacity', '0').css('visibility', 'hidden');
+                    $('*').removeClass('popupIsExist');
+                }
+            });
+        });
     </script>
 
     <script>
@@ -419,7 +451,7 @@ $(document).ready(function() {
     <script>
         $(document).ready(function() {
             $(".btn-add-task").click(function() {
-                var idParent = $(this).find('.em-hidden').text();
+                let idParent = $(this).find('.em-hidden').text();
                 $('.popup-add-task').find('.em-hidden').val(idParent);
                 $('.popup-add-task').css('visibility', 'visible').css('opacity', '1');
             });
@@ -429,14 +461,9 @@ $(document).ready(function() {
                 $('#nameTask').val("");
                 $('#descriptionTask').val("");
             });
-        });
-    </script>
-
-    <script>
-        $(document).ready(function() {
             $('.btn-add-subtask').click(function() {
-                var idParent = $(this).find('.em-hidden').text();
-                $('.popup-add-subtask').find('.em-hidden').val(idParent);
+                let idParentSubtask = $(this).find('.em-hidden').text();
+                $('.popup-add-subtask').find('.em-hidden').val(idParentSubtask);
                 $('.popup-add-subtask').css('visibility', 'visible').css('opacity', '1');
             });
             $('.popup-add-subtask-background').click(function(e) {
@@ -447,7 +474,46 @@ $(document).ready(function() {
             });
         });
     </script>
+
     <script src="~/scripts/tasktree.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            $('#addSectionBtn__popup, #addTaskBtn__popup, #addSubtaskBtn__popup').click(function() {
+                if ($(this).is($('#addSectionBtn__popup'))) {
+                    aValidate($("#nameSection"));
+                }
+                else if ($(this).is($('#addTaskBtn__popup'))) {
+                    aValidate($("#nameTask, #input-dueDate__popup"));
+                }
+                else {
+                    aValidate($("#nameSubtask, #input-dueDate-subtask__popup"));
+                }
+            });
+
+            function aValidate(input) {
+
+                if (input.val() == null || input.val().trim() === '') {
+                    $(input).addClass('input-validate').delay(1000).queue(function(next) {
+                        $(this).removeClass('input-validate');
+                        next();
+                    });
+
+
+                }
+                else {
+                    input.removeClass('input-validate');
+
+                };
+            };
+
+            $('#nameSection, #nameTask, #nameSubtask').keypress(function() {
+                $(this).removeClass('input-validate');
+            });
+
+        });
+    </script>
+
 }
 
 

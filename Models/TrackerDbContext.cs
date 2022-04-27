@@ -87,7 +87,7 @@ namespace TaskTrackerApp.Models
                 entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.ActualExecutionTime)
-                    .HasColumnType("datetime")
+                    .HasMaxLength(100)
                     .HasColumnName("actualExecutionTime");
 
                 entity.Property(e => e.DateCompletion)
@@ -134,7 +134,7 @@ namespace TaskTrackerApp.Models
                 entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.ActualExecutionTime)
-                    .HasColumnType("datetime")
+                    .HasMaxLength(100)
                     .HasColumnName("actualExecutionTime");
 
                 entity.Property(e => e.DateCompletion)

@@ -33,10 +33,8 @@ namespace TaskTrackerApp.Controllers
         {
 #warning id user
             TaskTree taskTree = new TaskTree(_idCurrentUser);
-            foreach (var item in taskTree.Tasks)
-            {
-                item.Status = _context.TaskStatuses.Where(x => x.Id == item.IdStatus).Select(x => x.Status).FirstOrDefault() ?? "";
-            }
+            taskTree.Tasks.ForEach(x => x.Status = _context.TaskStatuses.Where(t => t.Id == x.IdStatus).Select(t => t.Status).FirstOrDefault());
+            taskTree.Subtasks.ForEach(x => x.Status = _context.TaskStatuses.Where(t => t.Id == x.IdStatus).Select(t => t.Status).FirstOrDefault());
             ViewBag.TaskTree = taskTree;
             ViewBag.Statuses = _context.TaskStatuses.ToList();
             return View();
@@ -68,7 +66,7 @@ namespace TaskTrackerApp.Controllers
                     {
                         task.IdSection = null;
                     }
-                    
+
                     _context.Sections.Remove(section);
                     _context.SaveChanges();
                 }
@@ -106,13 +104,14 @@ namespace TaskTrackerApp.Controllers
             return RedirectToAction(nameof(Index));
         }
         [HttpPost]
-        public IActionResult AddSection(string nameSection, string descriptionSection)
+        public IActionResult RemoveSubtask(long idSubtask)
         {
-            if (!string.IsNullOrWhiteSpace(nameSection))
+            Subtask subtask = _context.Subtasks.Find(idSubtask) ?? new Models.Subtask() { Id = -1 };
+            if (subtask.Id != -1)
             {
                 try
                 {
-                    _context.Sections.Add(new Section() { IdUser = 1, Title = nameSection, Description = descriptionSection });
+                    _context.Subtasks.Remove(subtask);
                     _context.SaveChanges();
                 }
                 catch (Exception)
@@ -120,21 +119,48 @@ namespace TaskTrackerApp.Controllers
 
                     throw;
                 }
-                
             }
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        public IActionResult AddSection(string nameSection, string descriptionSection)
+        {
+            if (string.IsNullOrWhiteSpace(nameSection)) return NoContent();
+
+            try
+            {
+#warning idUser
+                _context.Sections.Add(new Section() 
+                { 
+                    IdUser = 1, 
+                    Title = nameSection, 
+                    Description = descriptionSection 
+                });
+                _context.SaveChanges();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
+
             return RedirectToAction(nameof(Index));
 
         }
         [HttpPost]
         public async Task<IActionResult> AddTask(long idSection, string nameTask, string descriptionTask, byte status, DateTime dueDate, string performersList)
         {
+            if (string.IsNullOrWhiteSpace(nameTask) || dueDate < new DateTime(1900, 1, 1)) return NoContent();
+
             DateTime regDate = DateTime.Now;
             double laboriousness = Math.Round((dueDate - regDate).TotalHours, 2);
-            Models.Task task = new Models.Task() 
-            { 
-                IdSection = idSection,  
-                Title = nameTask, 
-                Description = descriptionTask, 
+            Models.Task task = new Models.Task()
+            {
+                IdSection = idSection,
+                Title = nameTask,
+                Description = descriptionTask,
                 DateRegister = DateTime.Now,
                 IdStatus = status,
                 PeriodExecution = dueDate,
@@ -157,6 +183,8 @@ namespace TaskTrackerApp.Controllers
         [HttpPost]
         public async Task<IActionResult> AddSubtask(long idTask, string nameSubtask, string descriptionSubtask, byte status, DateTime dueDate, string performersList)
         {
+            if (string.IsNullOrWhiteSpace(nameSubtask) || dueDate < new DateTime(1900, 1, 1)) return NoContent();
+
             DateTime regDate = DateTime.Now;
             double laboriousness = Math.Round((dueDate - regDate).TotalHours, 2);
             Models.Subtask subtask = new Models.Subtask()
@@ -201,7 +229,7 @@ namespace TaskTrackerApp.Controllers
 
                 throw;
             }
-            return new EmptyResult();
+            return NoContent();
         }
         [HttpPost]
         public IActionResult ResumeTask(long idTask)
@@ -238,7 +266,7 @@ namespace TaskTrackerApp.Controllers
                     _context.SaveChanges();
                     return RedirectToAction(nameof(Index));
                 }
-                
+
             }
             catch (Exception)
             {
@@ -253,9 +281,57 @@ namespace TaskTrackerApp.Controllers
             try
             {
                 Subtask? subtask = _context.Subtasks.FirstOrDefault(x => x.Id == idSubtask);
+                if (subtask == null) return NoContent();
+
+                subtask.IdStatus = ((byte)TaskStatuses.Performing);
+                _context.Update(subtask);
+                _context.SaveChanges();
+                return RedirectToAction(nameof(Index));
+
+
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        [HttpPost]
+        public IActionResult CompletTask(long idTask)
+        {
+            try
+            {
+                Models.Task? task = _context.Tasks.FirstOrDefault(x => x.Id == idTask);
+                if (task != null)
+                {
+                    task.IdStatus = ((byte)TaskStatuses.Completed);
+                    var subtask = _context.Subtasks.Where(x => x.IdTask == idTask).ToList();
+                    subtask.ForEach(x => x.IdStatus = ((byte)TaskStatuses.Completed));
+                    _context.Update(task);
+                    _context.SaveChanges();
+                    return RedirectToAction(nameof(Index));
+                }
+
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return NoContent();
+        }
+        [HttpPost]
+        public IActionResult CompletSubtask(long idSubtask)
+        {
+            try
+            {
+                Models.Subtask? subtask = _context.Subtasks.FirstOrDefault(x => x.Id == idSubtask);
                 if (subtask != null)
                 {
-                    subtask.IdStatus = ((byte)TaskStatuses.Performing);
+                    subtask.IdStatus = ((byte)TaskStatuses.Completed);
+                    subtask.DateCompletion = DateTime.Now;
+                    subtask.ActualExecutionTime = CalculateDatetimeDifference(subtask.DateRegister);
                     _context.Update(subtask);
                     _context.SaveChanges();
                     return RedirectToAction(nameof(Index));
@@ -267,7 +343,15 @@ namespace TaskTrackerApp.Controllers
 
                 throw;
             }
-            return new EmptyResult();
+            return NoContent();
+        }
+
+        private static string CalculateDatetimeDifference(DateTime dateRegister)
+        {
+            var now = DateTime.Now;
+            short days = (short)(now.Subtract(dateRegister).TotalHours / 24);
+            byte hours = (byte)(now.Subtract(dateRegister).TotalHours % 24);
+            return $"{days}d {hours}h";
         }
     }
 }
