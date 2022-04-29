@@ -233,13 +233,7 @@
     </div>
 </div>
 
-<div class="popup-add-task">
-
-    <div class="popup-add-task-background">
-        <div class="popup-add-task-body text-center">
-            <div class="display-6">Добавление задачи</div>
-            <hr />
-            <div class="popup-add-task-body-controls">
+@Html.PartialAsync("AddTaskPartial.cshtml");
 
                 <form class="popup-form" asp-controller="Home" asp-action="AddTask">
 
