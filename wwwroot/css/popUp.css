@@ -1,7 +1,7 @@
 ﻿.popUp-view {
     background-color: white;
     width: 100px;
-    height: 100px;
+    height: 130px;
     position: absolute;
     left: 15px;
     display: inline-flex;
@@ -70,7 +70,7 @@
     position: relative;
     width: 500px;
     height: 400px;
-    top: 100px;
+    top: 35px;
     border-radius: 15px;
     display: flex;
     flex-direction: column;

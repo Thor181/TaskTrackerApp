@@ -5,9 +5,9 @@ html {
 }
 
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+    html {
+        font-size: 16px;
+    }
 }
 
 @media (max-width: 1536px) {
@@ -23,15 +23,14 @@ html {
 }
 
 body {
-  margin-bottom: 60px;
-
+    margin-bottom: 60px;
 }
 
-ul{
+ul {
     list-style-type: none;
 }
 
-footer{
+footer {
     line-height: 0px;
 }
 
@@ -48,6 +47,10 @@ footer{
     width: 29.5%;
 }
 
+#mainTitle {
+    color: white;
+}
+
 #mainDescription {
     margin: 0 10px 0 10px;
     text-indent: 25px;
@@ -56,6 +59,7 @@ footer{
     font-size: 15px;
     height: 100%;
     overflow-y: auto;
+    color: white;
 }
 
 .item-attributes {
@@ -63,20 +67,19 @@ footer{
     height: auto;
     width: auto;
     margin-left: 5px;
+    margin-right: 5px;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     flex-wrap: wrap;
-
 }
+
 .item-attr {
     background: white;
     box-shadow: #00000033 1px 1px 10px;
     border-radius: 8px;
     padding: 2px 5px 2px 5px;
     margin-bottom: 10px;
-    
-
 }
 
 .em-hidden {
@@ -98,6 +101,7 @@ select {
     border-radius: 8px;
     border: none;
 }
+
 .input-date {
     border-radius: 8px;
     border: none;
@@ -126,4 +130,39 @@ select {
     40%, 60% {
         transform: translate3d(4px, 0, 0);
     }
+}
+
+h2 {
+    background-color: #52affe;
+    border: 1px solid #0089fe;
+    border-radius: 3px;
+    color: white;
+    cursor: default;
+    height: 35px;
+    width: 80%;
+    text-align: center;
+}
+
+.head-navigate-panel {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin: 0 5px 0 5px;
+}
+
+.plus-symbol {
+    height: 100%;
+    width: 100%;
+    color: white;
+}
+
+    .plus-symbol:before {
+        position: relative;
+        top: -12px;
+        content: "+";
+    }
+
+#hr__mainDescription {
+    background-color: white;
+    opacity: .75;
 }

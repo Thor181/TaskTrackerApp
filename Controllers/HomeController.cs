@@ -149,6 +149,86 @@ namespace TaskTrackerApp.Controllers
             return RedirectToAction(nameof(Index));
 
         }
+
+        [HttpPost]
+        public IActionResult EditSection(long idSection, string nameSection, string descriptionSection)
+        {
+            if (string.IsNullOrWhiteSpace(nameSection)) return NoContent();
+
+            try
+            {
+#warning idUser
+                Section section = _context.Sections.Find(idSection) ?? new Section() { IdUser = -1};
+                if (section.IdUser == -1) return RedirectToAction(nameof(Index));
+                section.Title = nameSection;
+                section.Description = descriptionSection;
+                _context.Update(section);
+                _context.SaveChanges();
+
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
+
+            return RedirectToAction(nameof(Index));
+
+        }
+        [HttpPost]
+        public IActionResult EditTask(string nameTask, string descriptionTask, long idTask, byte status, DateTime dueDate, string performersList)
+        {
+            if (string.IsNullOrWhiteSpace(nameTask) || dueDate < new DateTime(1900, 1, 1)) return NoContent();
+            try
+            {
+#warning idUser
+                Models.Task task = _context.Tasks.Find(idTask) ?? new Models.Task() { IdSection = -1 };
+                if (task.IdSection == -1) return RedirectToAction(nameof(Index));
+                task.Title = nameTask;
+                task.Description = descriptionTask;
+                task.IdStatus = status;
+                task.PeriodExecution = dueDate;
+                _context.Update(task);
+                _context.SaveChanges();
+
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
+
+            return RedirectToAction(nameof(Index));
+
+        }
+        [HttpPost]
+        public IActionResult EditSubtask(string nameSubtask, string descriptionSubtask, long idSubtask, byte status, DateTime dueDate)
+        {
+            if (string.IsNullOrWhiteSpace(nameSubtask) || dueDate < new DateTime(1900, 1, 1)) return NoContent();
+            try
+            {
+                Subtask subtask = _context.Subtasks.Find(idSubtask) ?? new Subtask() { IdTask = -1 };
+                if (subtask.IdTask == -1) return RedirectToAction(nameof(Index));
+                subtask.Title = nameSubtask;
+                subtask.Description = descriptionSubtask;
+                subtask.IdStatus = status;
+                subtask.PeriodExecution = dueDate;
+                _context.Update(subtask);
+                _context.SaveChanges();
+
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
+
+            return RedirectToAction(nameof(Index));
+
+        }
         [HttpPost]
         public async Task<IActionResult> AddTask(long idSection, string nameTask, string descriptionTask, byte status, DateTime dueDate, string performersList)
         {
@@ -305,6 +385,7 @@ namespace TaskTrackerApp.Controllers
                 Models.Task? task = _context.Tasks.FirstOrDefault(x => x.Id == idTask);
                 if (task != null)
                 {
+                    if (task.IdStatus == ((byte)TaskStatuses.Appointed) || task.IdStatus == ((byte)TaskStatuses.Completed)) return NoContent();
                     task.IdStatus = ((byte)TaskStatuses.Completed);
                     var subtask = _context.Subtasks.Where(x => x.IdTask == idTask).ToList();
                     subtask.ForEach(x => x.IdStatus = ((byte)TaskStatuses.Completed));
@@ -329,6 +410,7 @@ namespace TaskTrackerApp.Controllers
                 Models.Subtask? subtask = _context.Subtasks.FirstOrDefault(x => x.Id == idSubtask);
                 if (subtask != null)
                 {
+                    if (subtask.IdStatus == ((byte)TaskStatuses.Appointed) || subtask.IdStatus == ((byte)TaskStatuses.Completed)) return NoContent();
                     subtask.IdStatus = ((byte)TaskStatuses.Completed);
                     subtask.DateCompletion = DateTime.Now;
                     subtask.ActualExecutionTime = CalculateDatetimeDifference(subtask.DateRegister);

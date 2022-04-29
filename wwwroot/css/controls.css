@@ -22,7 +22,7 @@
 }
 
     .three-dot-div:active .three-dot-piece {
-        fill: #52affe;
+        fill: #234a6c;
     }
 
 .three-dot-svg {
@@ -34,7 +34,7 @@
 }
 
 .three-dot-piece {
-    fill: #808080;
+    fill: #52affe;
 }
 
 button{
@@ -46,4 +46,15 @@ button{
     color: #fff;
     background-color: #52affe;
     border-color: #0089fe;
+    border-radius: 3px;
+    text-align: center;
+}
+
+#addSectionBtn {
+    font-size: 35px;
+    border-radius: 100%;
+    padding: 0;
+    width: 35px;
+    height: 35px;
+    
 }

@@ -10,11 +10,11 @@
 
 <div class="column-first">
 
-    <div class="text-center" style="display: flex; flex-direction: row; justify-content: space-between; margin: 0 5px 0 5px;">
+    <div class="head-navigate-panel" style="">
         <h2>@Localizer["TaskList"]</h2>
-        <div>
-            <button id="addSectionBtn" class="btn btn-primary">Добавить раздел</button>
-        </div>
+
+        <button id="addSectionBtn" class="btn btn-primary"><div class="plus-symbol"></div></button>
+
     </div>
 
     <nav class="navigate-panel" style="">
@@ -36,6 +36,7 @@
                             <div class="popUp-view">
                                 <form asp-controller="Home">
                                     <button type="button" class="btn-primary-popup btn-add-task">@Localizer["BtnAdd"]<em class="em-hidden">@treeSection.Id</em></button>
+                                    <button type="button" class="btn-primary-popup btn-edit-section">Редактировать<em class="em-hidden">@treeSection.Id</em></button>
 
                                     <button type="submit" class="btn-primary-popup" asp-action="RemoveSection" asp-route-idSection="@treeSection.Id">@Localizer["BtnDelete"]</button>
                                 </form>
@@ -83,10 +84,10 @@
                                                     }
                                                     @if (treeTask.IdStatus != 4)
                                                     {
-                                                    <button type="submit" class="btn-primary-popup" asp-action="CompletTask" asp-route-idTask="@treeTask.Id">Завершить</button>
-                                                        
-                                                    }
+                                                        <button type="submit" class="btn-primary-popup" asp-action="CompletTask" asp-route-idTask="@treeTask.Id">Завершить</button>
 
+                                                    }
+                                                    <button type="button" class="btn-primary-popup btn-edit-task">Редактировать<em class="em-hidden">@treeTask.Id</em></button>
                                                     <button type="submit" class="btn-primary-popup" asp-action="RemoveTask" asp-route-idTask="@treeTask.Id">@Localizer["BtnDelete"]</button>
                                                 </form>
                                             </div>
@@ -127,11 +128,12 @@
                                                                         <button type="submit" asp-action="ResumeSubtask" class="btn-primary-popup btn-resume-subtask" asp-route-idSubtask="@treeSubtask.Id">Возобновить <em class="em-hidden">@treeSubtask.Id</em></button>
 
                                                                     }
-                                                                    @if(treeSubtask.IdStatus != 4)
+                                                                    @if (treeSubtask.IdStatus != 4)
                                                                     {
-                                                                    <button type="submit" class="btn-primary-popup" asp-action="CompletSubtask" asp-route-idSubtask="@treeSubtask.Id">Завершить</button>
+                                                                        <button type="submit" class="btn-primary-popup" asp-action="CompletSubtask" asp-route-idSubtask="@treeSubtask.Id">Завершить</button>
 
                                                                     }
+                                                                    <button type="button" class="btn-primary-popup btn-edit-subtask">Редактировать<em class="em-hidden">@treeSubtask.Id</em></button>
                                                                     <button type="submit" class="btn-primary-popup" asp-action="RemoveSubtask" asp-route-idSubtask="@treeSubtask.Id">@Localizer["BtnDelete"]</button>
                                                                 </form>
 
@@ -208,7 +210,7 @@
 
         </div>
 
-        <hr />
+        <hr id="hr__mainDescription" />
         <p id="mainDescription"></p>
     </div>
 </div>
@@ -217,14 +219,14 @@
 
     <div class="popup-add-section-background">
         <div class="popup-add-section-body text-center">
-            <p class="display-6 ">Добавление раздела</p>
+            <div class="display-6 ">Добавление раздела</div>
             <hr />
             <div class="popup-add-section-body-controls">
                 <form class="popup-form" asp-controller="Home" asp-action="AddSection">
                     <input id="nameSection" name="nameSection" type="text" class="input-text-popup" placeholder="Название раздела (ресурсы)" />
                     <textarea id="descriptionSection" name="descriptionSection" class="input-text-popup text-area" placeholder="Описание раздела"></textarea>
 
-                    <button id="addSectionBtn__popup" class="btn btn-primary" type="submit">Добавить</button>
+                    <button id="addSectionBtn__popup" class="btn btn-primary" type="submit">Сохранить</button>
                 </form>
             </div>
         </div>
@@ -235,7 +237,7 @@
 
     <div class="popup-add-task-background">
         <div class="popup-add-task-body text-center">
-            <p class="display-6">Добавление задачи</p>
+            <div class="display-6">Добавление задачи</div>
             <hr />
             <div class="popup-add-task-body-controls">
 
@@ -267,7 +269,7 @@
 
                     <input id="performersList" name="performersList" type="text" class="input-text-popup" style="margin: 10px;" placeholder="Исполнители" />
 
-                    <button id="addTaskBtn__popup" class="btn btn-primary" style="margin: 10px;" type="submit">Добавить</button>
+                    <button id="addTaskBtn__popup" class="btn btn-primary" style="margin: 10px;" type="submit">Сохранить</button>
 
 
                 </form>
@@ -280,7 +282,7 @@
 
     <div class="popup-add-subtask-background">
         <div class="popup-add-subtask-body text-center">
-            <p class="display-6">Добавление подзадачи</p>
+            <div class="display-6">Добавление подзадачи</div>
             <hr />
             <div class="popup-add-subtask-body-controls">
 
@@ -310,7 +312,7 @@
 
                     </div>
 
-                    <button id="addSubtaskBtn__popup" class="btn btn-primary" style="margin: 10px;" type="submit">Добавить</button>
+                    <button id="addSubtaskBtn__popup" class="btn btn-primary" style="margin: 10px;" type="submit">Сохранить</button>
 
 
                 </form>
@@ -432,11 +434,16 @@
         });
     </script>
 
+
+
     <script>
         $(document).ready(function() {
-
+            //Add section
             $("#addSectionBtn").click(function() {
-                $('.popup-add-section').css('visibility', 'visible').css('opacity', '1');
+                let pop = $('.popup-add-section');
+                pop.find('.display-6').text("Добавление раздела");
+                pop.find('.popup-form').attr('action', '/Home/AddSection');
+                showElement(pop);
             });
             $('.popup-add-section-background').click(function(e) {
                 if (e.target !== e.currentTarget) return;
@@ -444,40 +451,56 @@
                 $('#nameSection').val("");
                 $('#descriptionSection').val("");
             });
-        });
-
-    </script>
-
-    <script>
-        $(document).ready(function() {
+            //Add task
             $(".btn-add-task").click(function() {
                 let idParent = $(this).find('.em-hidden').text();
-                $('.popup-add-task').find('.em-hidden').val(idParent);
-                $('.popup-add-task').css('visibility', 'visible').css('opacity', '1');
+                let popup = $('.popup-add-task');
+                popup.find('.display-6').text("Добавление задачи");
+
+                popup.find('.em-hidden').val(idParent);
+                popup.find('.popup-form').attr('action', '/Home/AddTask');
+                showElement($('.popup-add-task'));
             });
             $('.popup-add-task-background').click(function(e) {
                 if (e.target !== e.currentTarget) return;
-                $('.popup-add-task').css('visibility', 'hidden').css('opacity', '0');
+                hideElement($('.popup-add-task'));
                 $('#nameTask').val("");
                 $('#descriptionTask').val("");
+                $('.input-date').val("");
+                $('#performersList').val("");
             });
+            //AddSubtask
             $('.btn-add-subtask').click(function() {
                 let idParentSubtask = $(this).find('.em-hidden').text();
-                $('.popup-add-subtask').find('.em-hidden').val(idParentSubtask);
-                $('.popup-add-subtask').css('visibility', 'visible').css('opacity', '1');
+                let popup = $('.popup-add-subtask');
+                popup.find('.display-6').text("Добавление подзадачи");
+                popup.find('.em-hidden').val(idParentSubtask);
+                popup.attr('action', '/Home/AddSubtask');
+                showElement($('.popup-add-subtask'));
             });
             $('.popup-add-subtask-background').click(function(e) {
                 if (e.target !== e.currentTarget) return;
-                $('.popup-add-subtask').css('visibility', 'hidden').css('opacity', '0');
+                hideElement($('.popup-add-subtask'));
                 $('#nameSubtask').val("");
                 $('#descriptionSubtask').val("");
+                $('.input-date').val("");
+                $('#performersList').val("");
             });
+
+            function hideElement(item) {
+                item.css('visibility', 'hidden').css('opacity', '0');
+            };
+            function showElement(item) {
+                item.css('visibility', 'visible').css('opacity', '1');
+            };
+
         });
     </script>
 
     <script src="~/scripts/tasktree.js"></script>
 
     <script>
+        //validation
         $(document).ready(function() {
             $('#addSectionBtn__popup, #addTaskBtn__popup, #addSubtaskBtn__popup').click(function() {
                 if ($(this).is($('#addSectionBtn__popup'))) {
@@ -490,23 +513,17 @@
                     aValidate($("#nameSubtask, #input-dueDate-subtask__popup"));
                 }
             });
-
             function aValidate(input) {
-
                 if (input.val() == null || input.val().trim() === '') {
                     $(input).addClass('input-validate').delay(1000).queue(function(next) {
                         $(this).removeClass('input-validate');
                         next();
                     });
-
-
                 }
                 else {
                     input.removeClass('input-validate');
-
                 };
             };
-
             $('#nameSection, #nameTask, #nameSubtask').keypress(function() {
                 $(this).removeClass('input-validate');
             });
@@ -514,6 +531,105 @@
         });
     </script>
 
+
+    <script>
+        //edit
+        $(document).ready(function() {
+            //edit Section
+            $('.btn-edit-section').click(function() {
+                let pop = $('.popup-add-section');
+                pop.find('.display-6').text("Редактирование раздела");
+                let idSection = $(this).find('.em-hidden').first().text();
+                let spanSection = $(this).closest('.three-dot-div').siblings('.span-section')
+
+                pop.find('.popup-form').first().append(`<input class="em-hidden" name="idSection" value="${idSection}"/>`);
+                pop.find('.popup-form').attr('action', '/Home/EditSection');
+
+                showElement(pop);
+                let title = spanSection.first().clone().children().remove().end().text().trim();
+
+                let description = spanSection.first().find('.em-description').clone().children().remove().end().text().trim();
+                console.log(title);
+
+                pop.find('#nameSection').val(title);
+                pop.find('#descriptionSection').val(description);
+
+            });
+            //edit task
+            $('.btn-edit-task').click(function() {
+                let pop = $('.popup-add-task');
+                let idTask = $(this).find('.em-hidden').first().text();
+
+                pop.find('.popup-form').first().append(`<input class="em-hidden" name="idTask" value="${idTask}"/>`);
+                pop.find('.popup-form').attr('action', '/Home/EditTask');
+
+                let spanTask = $(this).closest('.three-dot-div').siblings('.span-task');
+
+                let title = spanTask.first().clone().children().remove().end().text().trim();
+                let status = spanTask.find('.em-status-id').text();
+                let description = spanTask.first().find('.em-description').clone().children().remove().end().text().trim();
+                let date = getDate(spanTask.find('.em-date-exec').text().split(' '));
+                let performers = spanTask.find('.em-performers-list').text();
+
+                pop.find('.display-6').text("Редактирование раздела");
+
+                pop.find('#nameTask').val(title);
+                pop.find('#descriptionTask').val(description);
+                pop.find(`select [value="${status}"]`).attr('selected', 'true');
+                pop.find('.input-date').val(date);
+                pop.find('#performersList').val(performers);
+
+                showElement(pop);
+            });
+            //edit subtask
+            $('.btn-edit-subtask').click(function() {
+                let pop = $('.popup-add-subtask');
+                let idSubtask = $(this).find('.em-hidden').first().text();
+
+                pop.find('.popup-form').first().append(`<input class="em-hidden" name="idSubtask" value="${idSubtask}"/>`);
+                pop.find('.popup-form').attr('action', '/Home/EditSubtask');
+
+                let spanSubtask = $(this).closest('.three-dot-div').siblings('.span-subtask');
+
+                let title = spanSubtask.first().clone().children().remove().end().text().trim();
+                let status = spanSubtask.find('.em-status-id').text();
+                let description = spanSubtask.first().find('.em-description').clone().children().remove().end().text().trim();
+                let date = getDate(spanSubtask.find('.em-date-exec').text().split(' '));
+                
+
+                pop.find('.display-6').text("Редактирование подзадачи");
+
+                pop.find('#nameSubtask').val(title);
+                pop.find('#descriptionSubtask').val(description);
+                pop.find(`select [value="${status}"]`).attr('selected', 'true');
+                pop.find('.input-date').val(date);
+
+                showElement(pop);
+            });
+
+            function getDate(dateAndTime) {
+                let date = dateAndTime[0].split('.');
+                let time = dateAndTime[1].split(':');
+                return `${date[2]}-${nowMonth()}${date[1] - 1}-${date[0]}T${time[0]}:${time[1]}`;
+            }
+
+            function nowMonth() {
+                const date = new Date();
+                return date.getMonth() > 9 ? null : "0";
+            };
+
+            function hideElement(item) {
+                item.css('visibility', 'hidden').css('opacity', '0');
+            };
+            function showElement(item) {
+                item.css('visibility', 'visible').css('opacity', '1');
+            };
+
+            function convertDate(date) {
+                return Date.parse(date);
+            }
+        });
+    </script>
 }
 
 
