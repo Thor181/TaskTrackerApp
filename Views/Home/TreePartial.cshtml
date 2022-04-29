@@ -1,0 +1,143 @@
+﻿@inject IViewLocalizer Localizer
+
+<div id="taskTree">
+    <ul>
+
+        @foreach (Section treeSection in ((TaskTree)ViewBag.TaskTree).Sections)
+        {
+
+            <li id="section_@treeSection.Id" class="li-section">
+
+                <span class="span-section">
+                    @treeSection.Title
+                    <em class="em-description">@treeSection.Description</em>
+
+                </span>
+                <div class="three-dot-div">
+
+                    <div class="popUp-view">
+                        <form asp-controller="Home">
+                            <button type="button" class="btn-primary-popup btn-add-task">@Localizer["BtnAdd"]<em class="em-hidden">@treeSection.Id</em></button>
+                            <button type="button" class="btn-primary-popup btn-edit-section">Редактировать<em class="em-hidden">@treeSection.Id</em></button>
+
+                            <button type="submit" class="btn-primary-popup" asp-action="RemoveSection" asp-route-idSection="@treeSection.Id">@Localizer["BtnDelete"]</button>
+                        </form>
+                    </div>
+                    <svg class="three-dot-svg">
+                        <circle class="three-dot-piece" r="2" cx="2.5" cy="3"></circle>
+                        <circle class="three-dot-piece" r="2" cx="2.5" cy="9"></circle>
+                        <circle class="three-dot-piece" r="2" cx="2.5" cy="15"></circle>
+                    </svg>
+
+
+                </div>
+
+                @foreach (var treeTask in ((TaskTree)ViewBag.TaskTree).Tasks)
+                {
+                    if (treeTask.IdSection == treeSection.Id)
+                    {
+                        <ul>
+                            <li id="task_@treeSection.Id" class="li-task">
+
+                                <span class="span-task">
+                                    @treeTask.Title
+                                    <em class="em-description">@treeTask.Description</em>
+                                    <em class="em-date-register">@treeTask.DateRegister</em>
+                                    <em class="em-status">@treeTask.Status</em>
+                                    <em class="em-status-id">@treeTask.IdStatus</em>
+                                    <em class="em-labor">@treeTask.Laboriousness</em>
+                                    <em class="em-date-exec">@treeTask.PeriodExecution</em>
+                                    <em class="em-actual-date">@treeTask.DateCompletion</em>
+                                    <em class="em-actual-time-exec">@treeTask.ActualExecutionTime</em>
+                                    <em class="em-performers-list">@treeTask.PerformersList</em>
+                                </span>
+
+                                <div class="three-dot-div">
+                                    <div class="popUp-view">
+                                        <form asp-controller="Home">
+                                            <button type="button" class="btn-primary-popup btn-add-subtask">Добавить <em class="em-hidden">@treeTask.Id</em></button>
+                                            @if (treeTask.IdStatus == 1 || treeTask.IdStatus == 2)
+                                            {
+                                                <button type="submit" asp-action="PauseTask" class="btn-primary-popup btn-pause-subtask" asp-route-idTask="@treeTask.Id">Приостановить <em class="em-hidden">@treeTask.Id</em></button>
+                                            }
+                                            else if (treeTask.IdStatus == 3)
+                                            {
+                                                <button type="submit" asp-action="ResumeTask" class="btn-primary-popup btn-resume-subtask" asp-route-idTask="@treeTask.Id">Возобновить <em class="em-hidden">@treeTask.Id</em></button>
+                                            }
+                                            @if (treeTask.IdStatus != 4)
+                                            {
+                                                <button type="submit" class="btn-primary-popup" asp-action="CompletTask" asp-route-idTask="@treeTask.Id">Завершить</button>
+
+                                            }
+                                            <button type="button" class="btn-primary-popup btn-edit-task">Редактировать<em class="em-hidden">@treeTask.Id</em></button>
+                                            <button type="submit" class="btn-primary-popup" asp-action="RemoveTask" asp-route-idTask="@treeTask.Id">@Localizer["BtnDelete"]</button>
+                                        </form>
+                                    </div>
+                                    <svg class="three-dot-svg">
+                                        <circle class="three-dot-piece" r="2" cx="2.5" cy="3"></circle>
+                                        <circle class="three-dot-piece" r="2" cx="2.5" cy="9"></circle>
+                                        <circle class="three-dot-piece" r="2" cx="2.5" cy="15"></circle>
+                                    </svg>
+                                </div>
+                                @foreach (var treeSubtask in ((TaskTree)ViewBag.TaskTree).Subtasks)
+                                {
+                                    if (treeSubtask.IdTask == treeTask.Id)
+                                    {
+                                        <ul>
+                                            <li id="subtask_@treeSection.Id" class="li-subtask">
+
+                                                <span class="span-subtask">
+                                                    @treeSubtask.Title
+
+                                                    <em class="em-description">@treeSubtask.Description</em>
+                                                    <em class="em-date-register">@treeSubtask.DateRegister</em>
+                                                    <em class="em-status">@treeSubtask.Status</em>
+                                                    <em class="em-status-id">@treeSubtask.IdStatus</em>
+                                                    <em class="em-labor">@treeSubtask.Laboriousness</em>
+                                                    <em class="em-date-exec">@treeSubtask.PeriodExecution</em>
+                                                    <em class="em-actual-date">@treeSubtask.DateCompletion</em>
+                                                    <em class="em-actual-time-exec">@treeSubtask.ActualExecutionTime</em>
+                                                </span>
+                                                <div class="three-dot-div">
+                                                    <div class="popUp-view">
+                                                        <form asp-controller="Home">
+                                                            @if (treeSubtask.IdStatus == 1 || treeSubtask.IdStatus == 2)
+                                                            {
+                                                                <button type="submit" asp-action="PauseSubtask" class="btn-primary-popup btn-pause-subtask" asp-route-idSubtask="@treeSubtask.Id">Приостановить <em class="em-hidden">@treeSubtask.Id</em></button>
+                                                            }
+                                                            else if (treeSubtask.IdStatus == 3)
+                                                            {
+                                                                <button type="submit" asp-action="ResumeSubtask" class="btn-primary-popup btn-resume-subtask" asp-route-idSubtask="@treeSubtask.Id">Возобновить <em class="em-hidden">@treeSubtask.Id</em></button>
+
+                                                            }
+                                                            @if (treeSubtask.IdStatus != 4)
+                                                            {
+                                                                <button type="submit" class="btn-primary-popup" asp-action="CompletSubtask" asp-route-idSubtask="@treeSubtask.Id">Завершить</button>
+
+                                                            }
+                                                            <button type="button" class="btn-primary-popup btn-edit-subtask">Редактировать<em class="em-hidden">@treeSubtask.Id</em></button>
+                                                            <button type="submit" class="btn-primary-popup" asp-action="RemoveSubtask" asp-route-idSubtask="@treeSubtask.Id">@Localizer["BtnDelete"]</button>
+                                                        </form>
+
+                                                    </div>
+                                                    <svg class="three-dot-svg">
+                                                        <circle class="three-dot-piece" r="2" cx="2.5" cy="3"></circle>
+                                                        <circle class="three-dot-piece" r="2" cx="2.5" cy="9"></circle>
+                                                        <circle class="three-dot-piece" r="2" cx="2.5" cy="15"></circle>
+                                                    </svg>
+
+
+                                                </div>
+
+                                            </li>
+                                        </ul>
+                                    }
+                                }
+                            </li>
+                        </ul>
+                    }
+                }
+            </li>
+        }
+    </ul>
+</div>

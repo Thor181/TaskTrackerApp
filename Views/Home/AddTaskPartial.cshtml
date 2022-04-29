@@ -1,0 +1,46 @@
+﻿@using Models = TaskTrackerApp.Models;
+
+<div class="popup-add-task">
+
+    <div class="popup-add-task-background">
+        <div class="popup-add-task-body text-center">
+            <div class="display-6">Добавление задачи</div>
+            <hr />
+            <div class="popup-add-task-body-controls">
+
+                <form class="popup-form" asp-controller="Home" asp-action="AddTask">
+
+                    <input name="idSection" class="em-hidden" />
+
+                    <input id="nameTask" name="nameTask" type="text" class="input-text-popup" placeholder="Наименование задачи (ресурсы)" />
+
+                    <textarea id="descriptionTask" name="descriptionTask" class="input-text-popup text-area" placeholder="Описание задачи"></textarea>
+
+                    <div class="popup-inner-div">
+                        <div style="display: inline-flex; flex-direction: column;">
+                            <span><b>Status</b></span>
+                            <select name="status" style="height: 28px;">
+                                @foreach (Models.TaskStatus item in ViewBag.Statuses)
+                                {
+                                    <option value="@item.Id">@item.Status</option>
+                                }
+                            </select>
+                        </div>
+
+                        <div style="display: inline-flex; flex-direction: column;">
+                            <span><b>Срок</b></span>
+                            <input id="input-dueDate__popup" name="dueDate" class="input-date" type="datetime-local" style="height: 28px;" />
+                        </div>
+
+                    </div>
+
+                    <input id="performersList" name="performersList" type="text" class="input-text-popup" style="margin: 10px;" placeholder="Исполнители" />
+
+                    <button id="addTaskBtn__popup" class="btn btn-primary" style="margin: 10px;" type="submit">Сохранить</button>
+
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

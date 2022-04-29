@@ -1,0 +1,44 @@
+﻿@using Models = TaskTrackerApp.Models;
+
+<div class="popup-add-subtask">
+
+    <div class="popup-add-subtask-background">
+        <div class="popup-add-subtask-body text-center">
+            <div class="display-6">Добавление подзадачи</div>
+            <hr />
+            <div class="popup-add-subtask-body-controls">
+
+                <form class="popup-form" asp-controller="Home" asp-action="AddSubtask">
+
+                    <input name="idTask" class="em-hidden" />
+
+                    <input id="nameSubtask" name="nameSubtask" type="text" class="input-text-popup required" placeholder="Наименование подзадачи (ресурсы)" />
+
+                    <textarea id="descriptionSubtask" name="descriptionSubtask" class="input-text-popup text-area" placeholder="Описание подзадачи"></textarea>
+
+                    <div class="popup-inner-div">
+                        <div style="display: inline-flex; flex-direction: column;">
+                            <span><b>Status</b></span>
+                            <select name="status" style="height: 28px;">
+                                @foreach (Models.TaskStatus item in ViewBag.Statuses)
+                                {
+                                    <option value="@item.Id">@item.Status</option>
+                                }
+                            </select>
+                        </div>
+
+                        <div style="display: inline-flex; flex-direction: column;">
+                            <span><b>Срок</b></span>
+                            <input id="input-dueDate-subtask__popup" name="dueDate" type="datetime-local" class="input-date" style="height: 28px;" />
+                        </div>
+
+                    </div>
+
+                    <button id="addSubtaskBtn__popup" class="btn btn-primary" style="margin: 10px;" type="submit">Сохранить</button>
+
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
