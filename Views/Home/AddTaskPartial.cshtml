@@ -1,10 +1,11 @@
 ﻿@using Models = TaskTrackerApp.Models;
+@inject IViewLocalizer Localizer;
 
 <div class="popup-add-task">
 
     <div class="popup-add-task-background">
         <div class="popup-add-task-body text-center">
-            <div class="display-6">Добавление задачи</div>
+            <div class="display-6">@Localizer["StrAddTask"]</div>
             <hr />
             <div class="popup-add-task-body-controls">
 
@@ -12,13 +13,13 @@
 
                     <input name="idSection" class="em-hidden" />
 
-                    <input id="nameTask" name="nameTask" type="text" class="input-text-popup" placeholder="Наименование задачи (ресурсы)" />
+                    <input id="nameTask" name="nameTask" type="text" class="input-text-popup" placeholder="@Localizer["StrInputNameTask"]"/>
 
-                    <textarea id="descriptionTask" name="descriptionTask" class="input-text-popup text-area" placeholder="Описание задачи"></textarea>
+                    <textarea id="descriptionTask" name="descriptionTask" class="input-text-popup text-area" placeholder="@Localizer["StrInputDescriptionTask"]"></textarea>
 
                     <div class="popup-inner-div">
                         <div style="display: inline-flex; flex-direction: column;">
-                            <span><b>Status</b></span>
+                            <span><b>@Localizer["StrStatus"]</b></span>
                             <select name="status" style="height: 28px;">
                                 @foreach (Models.TaskStatus item in ViewBag.Statuses)
                                 {
@@ -31,14 +32,11 @@
                             <span><b>Срок</b></span>
                             <input id="input-dueDate__popup" name="dueDate" class="input-date" type="datetime-local" style="height: 28px;" />
                         </div>
-
                     </div>
 
-                    <input id="performersList" name="performersList" type="text" class="input-text-popup" style="margin: 10px;" placeholder="Исполнители" />
+                    <input id="performersList" name="performersList" type="text" class="input-text-popup" style="margin: 10px;" placeholder="@Localizer["StrInputPerformers"]" />
 
-                    <button id="addTaskBtn__popup" class="btn btn-primary" style="margin: 10px;" type="submit">Сохранить</button>
-
-
+                    <button id="addTaskBtn__popup" class="btn btn-primary" style="margin: 10px;" type="submit">@Localizer["BtnSave"]</button>
                 </form>
             </div>
         </div>

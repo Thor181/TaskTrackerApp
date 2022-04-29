@@ -31,18 +31,11 @@ namespace TaskTrackerApp.Controllers
 
         public IActionResult Index()
         {
-#warning id user
             TaskTree taskTree = new TaskTree(_idCurrentUser);
             taskTree.Tasks.ForEach(x => x.Status = _context.TaskStatuses.Where(t => t.Id == x.IdStatus).Select(t => t.Status).FirstOrDefault());
             taskTree.Subtasks.ForEach(x => x.Status = _context.TaskStatuses.Where(t => t.Id == x.IdStatus).Select(t => t.Status).FirstOrDefault());
             ViewBag.TaskTree = taskTree;
             ViewBag.Statuses = _context.TaskStatuses.ToList();
-            return View();
-        }
-
-
-        public IActionResult Privacy()
-        {
             return View();
         }
 
@@ -52,18 +45,16 @@ namespace TaskTrackerApp.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
-
-
-
-
-
+        [HttpPost]
         public IActionResult AddSection(string nameSection, string descriptionSection)
         {
+            var x = 0;
+            var a = 1 / x;
+
             if (string.IsNullOrWhiteSpace(nameSection)) return NoContent();
 
             try
             {
-#warning idUser
                 _context.Sections.Add(new Section()
                 {
                     IdUser = 1,
@@ -79,7 +70,6 @@ namespace TaskTrackerApp.Controllers
             }
             return RedirectToAction(nameof(Index));
         }
-
         [HttpPost]
         public IActionResult AddTask(long idSection, string nameTask, string descriptionTask, byte status, DateTime dueDate, string performersList)
         {
@@ -98,6 +88,7 @@ namespace TaskTrackerApp.Controllers
                 Laboriousness = laboriousness,
                 PerformersList = performersList
             };
+            
             try
             {
                 _context.Add(task);

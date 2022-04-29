@@ -1,10 +1,11 @@
 ﻿@using Models = TaskTrackerApp.Models;
+@inject IViewLocalizer Localizer;
 
 <div class="popup-add-subtask">
 
     <div class="popup-add-subtask-background">
         <div class="popup-add-subtask-body text-center">
-            <div class="display-6">Добавление подзадачи</div>
+            <div class="display-6">@Localizer["StrAddSubtask"]</div>
             <hr />
             <div class="popup-add-subtask-body-controls">
 
@@ -12,13 +13,13 @@
 
                     <input name="idTask" class="em-hidden" />
 
-                    <input id="nameSubtask" name="nameSubtask" type="text" class="input-text-popup required" placeholder="Наименование подзадачи (ресурсы)" />
+                    <input id="nameSubtask" name="nameSubtask" type="text" class="input-text-popup required" placeholder="@Localizer["StrInputNameSubtask"]" />
 
-                    <textarea id="descriptionSubtask" name="descriptionSubtask" class="input-text-popup text-area" placeholder="Описание подзадачи"></textarea>
+                    <textarea id="descriptionSubtask" name="descriptionSubtask" class="input-text-popup text-area" placeholder="@Localizer["StrInputDescriptionSubtask"]"></textarea>
 
                     <div class="popup-inner-div">
                         <div style="display: inline-flex; flex-direction: column;">
-                            <span><b>Status</b></span>
+                            <span><b>@Localizer["StrStatus"]</b></span>
                             <select name="status" style="height: 28px;">
                                 @foreach (Models.TaskStatus item in ViewBag.Statuses)
                                 {
@@ -28,15 +29,13 @@
                         </div>
 
                         <div style="display: inline-flex; flex-direction: column;">
-                            <span><b>Срок</b></span>
+                            <span><b>@Localizer["StrDueDate"]</b></span>
                             <input id="input-dueDate-subtask__popup" name="dueDate" type="datetime-local" class="input-date" style="height: 28px;" />
                         </div>
 
                     </div>
 
-                    <button id="addSubtaskBtn__popup" class="btn btn-primary" style="margin: 10px;" type="submit">Сохранить</button>
-
-
+                    <button id="addSubtaskBtn__popup" class="btn btn-primary" style="margin: 10px;" type="submit">@Localizer["BtnSave"]</button>
                 </form>
             </div>
         </div>

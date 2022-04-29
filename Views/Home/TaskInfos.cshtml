@@ -1,38 +1,40 @@
-﻿<div class="item-attributes">
+﻿@inject IViewLocalizer Localizer;
+
+<div class="item-attributes">
 
     <div class="item-attr attr-date-register">
-        <b>Дата регистрации: </b>
+        <b>@Localizer["StrDateRegister"]: </b>
         <br />
         <div class="item-attr-value"></div>
     </div>
     <div class="item-attr attr-status">
-        <b>Статус: </b>
+        <b>@Localizer["StrStatus"]: </b>
         <br />
         <div class="item-attr-value"></div>
     </div>
     <div class="item-attr attr-labor">
-        <b>Плановая трудоемкость: </b>
+        <b>@Localizer["StrLabor"]: </b>
         <br />
         <div class="item-attr-value"></div>
     </div>
     <div class="item-attr attr-date-execution">
-        <b>Дата завершения: </b>
+        <b>@Localizer["StrDateExec"]: </b>
         <br />
         <div class="item-attr-value"></div>
     </div>
     <div class="item-attr attr-actual-date">
-        <b>Фактическая дата завершения: </b>
+        <b>@Localizer["StrActualDateExec"]: </b>
         <br />
         <div class="item-attr-value"></div>
     </div>
     <div class="item-attr attr-actual-date-execution">
-        <b>Фактическое время выполнения: </b>
+        <b>@Localizer["StrActualTimeExec"]: </b>
         <br />
         <div class="item-attr-value"></div>
     </div>
 
     <div class="item-attr attr-performers-list">
-        <b>Список исполнителей:</b>
+        <b>@Localizer["StrPerformersList"]:</b>
         <br />
         <div class="item-attr-value"></div>
     </div>

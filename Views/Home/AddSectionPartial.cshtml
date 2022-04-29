@@ -1,14 +1,16 @@
-﻿<div class="popup-add-section">
+﻿@inject IViewLocalizer Localizer;
+
+<div class="popup-add-section">
     <div class="popup-add-section-background">
         <div class="popup-add-section-body text-center">
-            <div class="display-6 ">Добавление раздела</div>
+            <div class="display-6">@Localizer["StrAddSection"]</div>
             <hr />
             <div class="popup-add-section-body-controls">
                 <form class="popup-form" asp-controller="Home" asp-action="AddSection">
-                    <input id="nameSection" name="nameSection" type="text" class="input-text-popup" placeholder="Название раздела (ресурсы)" />
-                    <textarea id="descriptionSection" name="descriptionSection" class="input-text-popup text-area" placeholder="Описание раздела"></textarea>
+                    <input id="nameSection" name="nameSection" type="text" class="input-text-popup" placeholder="@Localizer["StrInputNameSection"]" />
+                    <textarea id="descriptionSection" name="descriptionSection" class="input-text-popup text-area" placeholder="@Localizer["StrInputDescriptionSection"]"></textarea>
 
-                    <button id="addSectionBtn__popup" class="btn btn-primary" type="submit">Сохранить</button>
+                    <button id="addSectionBtn__popup" class="btn btn-primary" type="submit">@Localizer["StrBtnSave"]</button>
                 </form>
             </div>
         </div>

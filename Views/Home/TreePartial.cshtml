@@ -18,7 +18,7 @@
                     <div class="popUp-view">
                         <form asp-controller="Home">
                             <button type="button" class="btn-primary-popup btn-add-task">@Localizer["BtnAdd"]<em class="em-hidden">@treeSection.Id</em></button>
-                            <button type="button" class="btn-primary-popup btn-edit-section">Редактировать<em class="em-hidden">@treeSection.Id</em></button>
+                            <button type="button" class="btn-primary-popup btn-edit-section">@Localizer["BtnEdit"]<em class="em-hidden">@treeSection.Id</em></button>
 
                             <button type="submit" class="btn-primary-popup" asp-action="RemoveSection" asp-route-idSection="@treeSection.Id">@Localizer["BtnDelete"]</button>
                         </form>
@@ -55,21 +55,21 @@
                                 <div class="three-dot-div">
                                     <div class="popUp-view">
                                         <form asp-controller="Home">
-                                            <button type="button" class="btn-primary-popup btn-add-subtask">Добавить <em class="em-hidden">@treeTask.Id</em></button>
+                                            <button type="button" class="btn-primary-popup btn-add-subtask">@Localizer["BtnAdd"]<em class="em-hidden">@treeTask.Id</em></button>
                                             @if (treeTask.IdStatus == 1 || treeTask.IdStatus == 2)
                                             {
-                                                <button type="submit" asp-action="PauseTask" class="btn-primary-popup btn-pause-subtask" asp-route-idTask="@treeTask.Id">Приостановить <em class="em-hidden">@treeTask.Id</em></button>
+                                                <button type="submit" asp-action="PauseTask" class="btn-primary-popup btn-pause-subtask" asp-route-idTask="@treeTask.Id">@Localizer["BtnPause"] <em class="em-hidden">@treeTask.Id</em></button>
                                             }
                                             else if (treeTask.IdStatus == 3)
                                             {
-                                                <button type="submit" asp-action="ResumeTask" class="btn-primary-popup btn-resume-subtask" asp-route-idTask="@treeTask.Id">Возобновить <em class="em-hidden">@treeTask.Id</em></button>
+                                                <button type="submit" asp-action="ResumeTask" class="btn-primary-popup btn-resume-subtask" asp-route-idTask="@treeTask.Id">@Localizer["BtnResume"]<em class="em-hidden">@treeTask.Id</em></button>
                                             }
                                             @if (treeTask.IdStatus != 4)
                                             {
-                                                <button type="submit" class="btn-primary-popup" asp-action="CompletTask" asp-route-idTask="@treeTask.Id">Завершить</button>
+                                                <button type="submit" class="btn-primary-popup" asp-action="CompletTask" asp-route-idTask="@treeTask.Id">@Localizer["BtnComplet"]</button>
 
                                             }
-                                            <button type="button" class="btn-primary-popup btn-edit-task">Редактировать<em class="em-hidden">@treeTask.Id</em></button>
+                                            <button type="button" class="btn-primary-popup btn-edit-task">@Localizer["BtnEdit"]<em class="em-hidden">@treeTask.Id</em></button>
                                             <button type="submit" class="btn-primary-popup" asp-action="RemoveTask" asp-route-idTask="@treeTask.Id">@Localizer["BtnDelete"]</button>
                                         </form>
                                     </div>
@@ -84,7 +84,7 @@
                                     if (treeSubtask.IdTask == treeTask.Id)
                                     {
                                         <ul>
-                                            <li id="subtask_@treeSection.Id" class="li-subtask">
+                                            <li id="subtask_@treeSection.Id" class="li-subtask" >
 
                                                 <span class="span-subtask">
                                                     @treeSubtask.Title
@@ -103,19 +103,19 @@
                                                         <form asp-controller="Home">
                                                             @if (treeSubtask.IdStatus == 1 || treeSubtask.IdStatus == 2)
                                                             {
-                                                                <button type="submit" asp-action="PauseSubtask" class="btn-primary-popup btn-pause-subtask" asp-route-idSubtask="@treeSubtask.Id">Приостановить <em class="em-hidden">@treeSubtask.Id</em></button>
+                                                                <button type="submit" asp-action="PauseSubtask" class="btn-primary-popup btn-pause-subtask" asp-route-idSubtask="@treeSubtask.Id">@Localizer["BtnPause"]<em class="em-hidden">@treeSubtask.Id</em></button>
                                                             }
                                                             else if (treeSubtask.IdStatus == 3)
                                                             {
-                                                                <button type="submit" asp-action="ResumeSubtask" class="btn-primary-popup btn-resume-subtask" asp-route-idSubtask="@treeSubtask.Id">Возобновить <em class="em-hidden">@treeSubtask.Id</em></button>
+                                                                <button type="submit" asp-action="ResumeSubtask" class="btn-primary-popup btn-resume-subtask" asp-route-idSubtask="@treeSubtask.Id">@Localizer["BtnResume"]<em class="em-hidden">@treeSubtask.Id</em></button>
 
                                                             }
                                                             @if (treeSubtask.IdStatus != 4)
                                                             {
-                                                                <button type="submit" class="btn-primary-popup" asp-action="CompletSubtask" asp-route-idSubtask="@treeSubtask.Id">Завершить</button>
+                                                                <button type="submit" class="btn-primary-popup" asp-action="CompletSubtask" asp-route-idSubtask="@treeSubtask.Id">@Localizer["BtnComplet"]</button>
 
                                                             }
-                                                            <button type="button" class="btn-primary-popup btn-edit-subtask">Редактировать<em class="em-hidden">@treeSubtask.Id</em></button>
+                                                            <button type="button" class="btn-primary-popup btn-edit-subtask">@Localizer["BtnEdit"]<em class="em-hidden">@treeSubtask.Id</em></button>
                                                             <button type="submit" class="btn-primary-popup" asp-action="RemoveSubtask" asp-route-idSubtask="@treeSubtask.Id">@Localizer["BtnDelete"]</button>
                                                         </form>
 
