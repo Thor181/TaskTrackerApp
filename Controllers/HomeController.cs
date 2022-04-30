@@ -37,6 +37,11 @@ namespace TaskTrackerApp.Controllers
 
         private void Initialize()
         {
+            if (_context.Users.Count(x => x.Id > -1) == 0)
+            {
+                _context.Users.Add(new Models.User() { Id = 1, Login = "admin", Password = "123456" });
+                _context.SaveChanges();
+            }
             TaskTree taskTree = new TaskTree(_idCurrentUser);
             taskTree.Tasks.ForEach(x => x.Status = _context.TaskStatuses.Where(t => t.Id == x.IdStatus).Select(t => t.Status).FirstOrDefault()); //add string (not id) status to model
             taskTree.Subtasks.ForEach(x => x.Status = _context.TaskStatuses.Where(t => t.Id == x.IdStatus).Select(t => t.Status).FirstOrDefault()); //add string (not id) status to model
