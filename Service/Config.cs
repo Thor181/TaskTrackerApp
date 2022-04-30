@@ -1,6 +1,6 @@
 ﻿namespace TaskTrackerApp.Service
 {
-    public class Config
+    internal class Config
     {
         public static string ConnectionString { get; set; } = null!;
     }

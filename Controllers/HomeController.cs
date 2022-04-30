@@ -31,33 +31,34 @@ namespace TaskTrackerApp.Controllers
 
         public IActionResult Index()
         {
-            TaskTree taskTree = new TaskTree(_idCurrentUser);
-            taskTree.Tasks.ForEach(x => x.Status = _context.TaskStatuses.Where(t => t.Id == x.IdStatus).Select(t => t.Status).FirstOrDefault());
-            taskTree.Subtasks.ForEach(x => x.Status = _context.TaskStatuses.Where(t => t.Id == x.IdStatus).Select(t => t.Status).FirstOrDefault());
-            ViewBag.TaskTree = taskTree;
-            ViewBag.Statuses = _context.TaskStatuses.ToList();
+            Initialize();
             return View();
         }
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        private void Initialize()
+        {
+            TaskTree taskTree = new TaskTree(_idCurrentUser);
+            taskTree.Tasks.ForEach(x => x.Status = _context.TaskStatuses.Where(t => t.Id == x.IdStatus).Select(t => t.Status).FirstOrDefault()); //add string (not id) status to model
+            taskTree.Subtasks.ForEach(x => x.Status = _context.TaskStatuses.Where(t => t.Id == x.IdStatus).Select(t => t.Status).FirstOrDefault()); //add string (not id) status to model
+            ViewBag.TaskTree = taskTree;
+            ViewBag.Statuses = _context.TaskStatuses.ToList();
+        }
+
         public IActionResult Error()
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            return View();
         }
 
         [HttpPost]
         public IActionResult AddSection(string nameSection, string descriptionSection)
         {
-            var x = 0;
-            var a = 1 / x;
-
             if (string.IsNullOrWhiteSpace(nameSection)) return NoContent();
 
             try
             {
                 _context.Sections.Add(new Section()
                 {
-                    IdUser = 1,
+                    IdUser = _idCurrentUser,
                     Title = nameSection,
                     Description = descriptionSection
                 });
@@ -65,7 +66,6 @@ namespace TaskTrackerApp.Controllers
             }
             catch (Exception)
             {
-
                 throw;
             }
             return RedirectToAction(nameof(Index));
@@ -88,7 +88,7 @@ namespace TaskTrackerApp.Controllers
                 Laboriousness = laboriousness,
                 PerformersList = performersList
             };
-            
+
             try
             {
                 _context.Add(task);
@@ -138,8 +138,7 @@ namespace TaskTrackerApp.Controllers
 
             try
             {
-#warning idUser
-                Section section = _context.Sections.Find(idSection) ?? new Section() { IdUser = -1};
+                Section section = _context.Sections.Find(idSection) ?? new Section() { IdUser = -1 };
                 if (section.IdUser == -1) return RedirectToAction(nameof(Index));
                 section.Title = nameSection;
                 section.Description = descriptionSection;
@@ -149,7 +148,6 @@ namespace TaskTrackerApp.Controllers
             }
             catch (Exception)
             {
-
                 throw;
             }
 
@@ -163,7 +161,6 @@ namespace TaskTrackerApp.Controllers
             if (string.IsNullOrWhiteSpace(nameTask) || dueDate < new DateTime(1900, 1, 1)) return NoContent();
             try
             {
-#warning idUser
                 Models.Task task = _context.Tasks.Find(idTask) ?? new Models.Task() { IdSection = -1 };
                 if (task.IdSection == -1) return RedirectToAction(nameof(Index));
                 task.Title = nameTask;
@@ -172,17 +169,12 @@ namespace TaskTrackerApp.Controllers
                 task.PeriodExecution = dueDate;
                 _context.Update(task);
                 _context.SaveChanges();
-
             }
             catch (Exception)
             {
-
                 throw;
             }
-
-
             return RedirectToAction(nameof(Index));
-
         }
         [HttpPost]
         public IActionResult EditSubtask(string nameSubtask, string descriptionSubtask, long idSubtask, byte status, DateTime dueDate)
@@ -202,13 +194,11 @@ namespace TaskTrackerApp.Controllers
             }
             catch (Exception)
             {
-
                 throw;
             }
-
             return RedirectToAction(nameof(Index));
         }
-       
+
         [HttpPost]
         public IActionResult RemoveSection(long idSection)
         {
@@ -219,15 +209,13 @@ namespace TaskTrackerApp.Controllers
                 {
                     foreach (Models.Task task in _context.Tasks.Where(x => x.IdSection == section.Id))
                     {
-                        task.IdSection = null;
+                        task.IdSection = null; //cascade deleting
                     }
-
                     _context.Sections.Remove(section);
                     _context.SaveChanges();
                 }
                 catch (Exception)
                 {
-
                     throw;
                 }
             }
@@ -243,15 +231,13 @@ namespace TaskTrackerApp.Controllers
                 {
                     foreach (Subtask subtask in _context.Subtasks.Where(x => x.IdTask == task.Id))
                     {
-                        subtask.IdTask = null;
+                        subtask.IdTask = null; //cascade deleting
                     }
-
                     _context.Tasks.Remove(task);
                     _context.SaveChanges();
                 }
                 catch (Exception)
                 {
-
                     throw;
                 }
             }
@@ -270,13 +256,13 @@ namespace TaskTrackerApp.Controllers
                 }
                 catch (Exception)
                 {
-
                     throw;
                 }
             }
             return RedirectToAction(nameof(Index));
         }
 
+        [HttpPost]
         public IActionResult PauseTask(long idTask)
         {
             try
@@ -287,14 +273,12 @@ namespace TaskTrackerApp.Controllers
                     task.IdStatus = ((byte)TaskStatuses.Pause);
                     _context.Update(task);
                     _context.SaveChanges();
-                    
+
                     return RedirectToAction(nameof(Index));
                 }
-
             }
             catch (Exception)
             {
-
                 throw;
             }
             return NoContent();
@@ -312,37 +296,31 @@ namespace TaskTrackerApp.Controllers
                     _context.SaveChanges();
                     return RedirectToAction(nameof(Index));
                 }
-
             }
             catch (Exception)
             {
-
                 throw;
             }
             return new EmptyResult();
         }
-        
+
         [HttpPost]
         public IActionResult PauseSubtask(long idSubtask)
         {
             try
             {
                 Subtask? subtask = _context.Subtasks.FirstOrDefault(x => x.Id == idSubtask);
-                if (subtask != null)
-                {
-                    subtask.IdStatus = ((byte)TaskStatuses.Pause);
-                    _context.Update(subtask);
-                    _context.SaveChanges();
-                    return RedirectToAction(nameof(Index));
-                }
+                if (subtask == null) return NoContent();
 
+                subtask.IdStatus = ((byte)TaskStatuses.Pause);
+                _context.Update(subtask);
+                _context.SaveChanges();
+                return RedirectToAction(nameof(Index));
             }
             catch (Exception)
             {
-
                 throw;
             }
-            return new EmptyResult();
         }
         [HttpPost]
         public IActionResult ResumeSubtask(long idSubtask)
@@ -356,12 +334,9 @@ namespace TaskTrackerApp.Controllers
                 _context.Update(subtask);
                 _context.SaveChanges();
                 return RedirectToAction(nameof(Index));
-
-
             }
             catch (Exception)
             {
-
                 throw;
             }
         }
@@ -402,27 +377,17 @@ namespace TaskTrackerApp.Controllers
 
                     subtask.IdStatus = ((byte)TaskStatuses.Completed);
                     subtask.DateCompletion = DateTime.Now;
-                    subtask.ActualExecutionTime = CalculateDatetimeDifference(subtask.DateRegister);
+                    subtask.ActualExecutionTime = Service.DateTimeController.CalculateDifference(subtask.DateRegister);
                     _context.Update(subtask);
                     _context.SaveChanges();
                     return RedirectToAction(nameof(Index));
                 }
-
             }
             catch (Exception)
             {
-
                 throw;
             }
             return NoContent();
-        }
-
-        private static string CalculateDatetimeDifference(DateTime dateRegister)
-        {
-            var now = DateTime.Now;
-            short days = (short)(now.Subtract(dateRegister).TotalHours / 24);
-            byte hours = (byte)(now.Subtract(dateRegister).TotalHours % 24);
-            return $"{days}d {hours}h";
         }
     }
 }

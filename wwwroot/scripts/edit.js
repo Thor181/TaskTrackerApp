@@ -25,6 +25,7 @@ $(document).ready(function () {
         let pop = $('.popup-add-task');
         let idTask = $(this).find('.em-hidden').first().text();
 
+        pop.find('.display-6').text("Редактирование задачи");
         pop.find('.popup-form').first().append(`<input class="em-hidden" name="idTask" value="${idTask}"/>`);
         pop.find('.popup-form').attr('action', '/Home/EditTask');
 
@@ -35,8 +36,6 @@ $(document).ready(function () {
         let description = spanTask.first().find('.em-description').clone().children().remove().end().text().trim();
         let date = getDate(spanTask.find('.em-date-exec').text().split(' '));
         let performers = spanTask.find('.em-performers-list').text();
-
-        pop.find('.display-6').text("Редактирование раздела");
 
         pop.find('#nameTask').val(title);
         pop.find('#descriptionTask').val(description);
